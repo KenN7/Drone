@@ -1,0 +1,9 @@
+Change Component Designator: OldDesignator= NewDesignator=Cde
+Change Component Designator: OldDesignator= NewDesignator=Creg2
+Change Component Designator: OldDesignator= NewDesignator=Reg
+Change Component Designator: OldDesignator= NewDesignator=Reg3
+Change Component Designator: OldDesignator=Creg2 NewDesignator=Creg1
+Change Net Name : Old Net Name=NetRegulAAH(5V)_8 New Net Name=NetReg_8
+Added Member To Class: ClassName=DroneSch Member=Component Cde CAP
+Added Member To Class: ClassName=DroneRegul Member=Component Creg2 CAP Pol
+Added Member To Class: ClassName=DroneRegul Member=Component Reg PTB78560x

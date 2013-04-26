@@ -1,0 +1,5 @@
+Removed Member From Class: ClassName=DroneRegul Member=Cdecoup1
+Removed Member From Class: ClassName=DroneSch Member=
+Added Pin To Net: NetName=GND Pin=Srst-4
+Added Room: Name=DroneRegul
+Added Room: Name=DroneSch

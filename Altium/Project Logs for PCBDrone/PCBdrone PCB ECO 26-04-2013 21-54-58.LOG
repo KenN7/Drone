@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=GND Pin=reset-2
+Removed Pin From Net: NetName=MCLR Pin=reset-4
+Removed Member From Class: ClassName=DroneSch Member=
+Removed Member From Class: ClassName=DroneSch Member=Reg
+Change Component Designator: OldDesignator= NewDesignator=Cdecoup1
+Change Component Designator: OldDesignator= NewDesignator=Cdecoup2
+Change Component Designator: OldDesignator= NewDesignator=Cdecoup3
+Change Component Designator: OldDesignator= NewDesignator=RegulAAH(5V)
+Change Component Designator: OldDesignator=Reg NewDesignator=Regul3V3
+Change Component Designator: OldDesignator=reset NewDesignator=Srst
+Added Pin To Net: NetName=MCLR Pin=Srst-2
+Added Member To Class: ClassName=DroneSch Member=Component Cdecoup1 CAP
+Added Member To Class: ClassName=DroneSch Member=Component Cdecoup2 CAP
+Added Member To Class: ClassName=DroneSch Member=Component Cdecoup3 CAP
