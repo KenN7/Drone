@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: PCBdrone.PcbDoc   27/04/2013  01:15:44
+---------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : PCBdrone.TXT
+EIA File   : PCBdrone.DRL
+
+Tool         Hole Size           Hole Type     Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        28mil (0.7112mm)         Round          28               15.14 Inch (384.56 mm)
+T2        31mil (0.7874mm)         Round          4                2.65 Inch (67.31 mm)
+T3        33mil (0.8382mm)         Round          2                0.30 Inch (7.62 mm)
+T4        35mil (0.889mm)          Round          61               11.84 Inch (300.78 mm)
+T5        39mil (0.9906mm)         Round          3                0.20 Inch (5.08 mm)
+T6        43mil (1.0922mm)         Round          11               5.47 Inch (139.07 mm)
+T7        47mil (1.1938mm)         Round          4                0.76 Inch (19.35 mm)
+T8        51mil (1.2954mm)         Round          10               9.45 Inch (240.08 mm)
+T9        55mil (1.397mm)          Round          6                1.44 Inch (36.60 mm)
+T10       134mil (3.4036mm)        Round          2                2.56 Inch (65.11 mm)
+---------------------------------------------------------------------------
+Totals                                            131              49.83 Inch (1265.56 mm)
+
+Total Processing Time (hh:mm:ss) : 00:00:00

@@ -1,9 +1,13 @@
-Output: Bill of Materials
-Type  : BOM
-From  : Variant [[No Variations]] of Project [PCBDrone.PrjPCB]
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [PCBDrone.PrjPCB]
+   Generated File[PCBdrone.TXT]
+   Generated File[PCBdrone.DRL]
+   Generated File[PCBdrone.LDP]
+   Generated File[PCBdrone.DRR]
 
 
-Files Generated   : 0
+Files Generated   : 4
 Documents Printed : 0
 
-Finished Output Generation At 23:45:25 On 26/04/2013
+Finished Output Generation At 01:15:44 On 27/04/2013
