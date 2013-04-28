@@ -39,5 +39,27 @@
 /* TODO User level functions prototypes (i.e. InitApp) go here */
 
 void ConfigureOscillator(void);    /* Handles clock switching/osc initialization */
-
 void InitApp(void);             /* I/O and Peripheral Initialization          */
+
+// Protos for accelerometer and gyroscope
+unsigned char initAccel(void);
+unsigned char readAccel(int *data);
+
+unsigned char initGyro(void);
+unsigned char readGyro(int *data);
+
+//Protos for T2 and InputCapture
+void Initialize_T2();
+void ReStart_T2();
+void Initialize_IC();
+
+//Protos for T3 and Outputcompare
+void Initialize_T3();
+void ReStart_T3();
+void Initialize_OC();
+void Start_OC();
+
+//Protos for T1 and the filter for accel and gyros values
+void Initialize_T1();
+void ReStart_T1();
+float complementary_filter(float value, float gyro, float accel);

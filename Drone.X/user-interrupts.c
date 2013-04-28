@@ -20,7 +20,7 @@
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
 #include "header.h"        /* Function / Parameters                           */
-#include "timer.h"         /* Include timer fonctions                         */
+#include <timer.h>
 
 /******************************************************************************/
 /* User Functions                                                             */

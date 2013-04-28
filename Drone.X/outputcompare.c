@@ -12,8 +12,8 @@
 #include <libpic30.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "outcompare.h"
-#include "timer.h"
+#include <outcompare.h>
+#include <timer.h>
 
 /*
  * 
@@ -50,7 +50,7 @@ void Initialize_OC()
     ConfigIntOC4(OC_INT_OFF & OC_INT_PRIOR_2);
     OC1R = 7;
 }
-// POur changer la largeur du PWM il faut mettre OC1R entre 0 et 65535
+// Pour changer la largeur du PWM il faut mettre OC1R entre 0 et 65535
 void Start_OC()
 {
     OC1CONbits.OCM = 0b110;

@@ -12,7 +12,8 @@
 #include <libpic30.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "timer.h"
+#include <timer.h>
+#include <incap.h>
 
 /*
  * 
@@ -37,31 +38,15 @@ void Initialize_IC()
     _IC7R = 7;
     _IC8R = 20;
 
-    IC1CONbits.ICSIDL = 0; //Continue in idle mode
-    IC1CONbits.ICTMR = 1; //Use Timer2
-    IC1CONbits.ICI = 0b00; //Interrupt on every capture
-    IC1CONbits.ICM = 0b001; //Every edge
-    IC2CONbits.ICSIDL = 0; //Continue in idle mode
-    IC2CONbits.ICTMR = 1; //Use Timer2
-    IC2CONbits.ICI = 0b00; //Interrupt on every capture
-    IC2CONbits.ICM = 0b001; //Act as interrupt pin only
-    IC7CONbits.ICSIDL = 0; //Continue in idle mode
-    IC7CONbits.ICTMR = 1; //Use Timer2
-    IC7CONbits.ICI = 0b00; //Interrupt on every capture
-    IC7CONbits.ICM = 0b001; //Act as interrupt pin only
-    IC8CONbits.ICSIDL = 0; //Continue in idle mode
-    IC8CONbits.ICTMR = 1; //Use Timer2
-    IC8CONbits.ICI = 0b00; //Interrupt on every capture
-    IC8CONbits.ICM = 0b001; //Act as interrupt pin only
+    OpenCapture1(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
+    OpenCapture2(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
+    OpenCapture7(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
+    OpenCapture8(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
 
-    IEC0bits.IC1IE = 1; //Enable interrupt
-    IPC0bits.IC1IP = 0b110; //Priority 6
-    IEC0bits.IC2IE = 1; //Enable interrupt
-    IPC1bits.IC2IP = 0b110; //Priority 6
-    IEC1bits.IC7IE = 1; //Enable interrupt
-    IPC5bits.IC7IP = 0b110; //Priority 6
-    IEC1bits.IC8IE = 1; //Enable interrupt
-    IPC5bits.IC8IP = 0b110; //Priority 6
+    ConfigIntCapture1(IC_INT_ON & IC_INT_PRIOR_6);
+    ConfigIntCapture2(IC_INT_ON & IC_INT_PRIOR_6);
+    ConfigIntCapture7(IC_INT_ON & IC_INT_PRIOR_6);
+    ConfigIntCapture8(IC_INT_ON & IC_INT_PRIOR_6);
 }
 
 

@@ -49,7 +49,7 @@ int16_t main(void)
     // Initialize IO ports and peripherals.
     ConfigureOscillator();
     InitApp();
-
+    
     while (1)
     {
         OC1R = 700;
