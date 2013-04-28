@@ -64,13 +64,12 @@ void ReStart_T1()
     T1CONbits.TON = 1;
 }
 
-//Runs a complementary filter configured via float a
+//Runs a complementary filter configured via coef c_filter (in header.h)
 float complementary_filter(float value, float gyro, float accel)
 {
-    float a = 0.9994;
-    float dt = 1/400;
     float filtered_value;
-    filtered_value = (value + gyro*dt)*a + accel*(1-a);
+    //filtered_value = gyro*a + accel*(1-a); // Here gyro is an angle
+    filtered_value = (value + gyro*dt)*c_filter + accel*(1-c_filter); // Here gyro is a rate (angle/dt)
     //COMPLEMENTARY_YANGLE = (COMPLEMENTARY_YANGLE + GYRO_YRATE*dt)*a + ACCEL_YANGLE*(1-a);
     return filtered_value;
 }

@@ -56,5 +56,5 @@
 #define ITG3200_GYRO_ZOUT_L             0x22
 #define ITG3200_PWR_MGM                 0x3E
 
-#define i2c_ADXL345                     0x53
-#define i2c_ITG3200                     0x68
+#define i2c_ADXL345                     0xA6 //accelerometer
+#define i2c_ITG3200                     0xD0 //gyroscope

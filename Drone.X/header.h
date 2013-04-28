@@ -28,9 +28,12 @@
 
 /* TODO Application specific user parameters used in user.c may go here */
 
-#define led1 _LATA2
-#define led2 _LATA3
-#define led3 _LATA4
+#define led1            _LATA2
+#define led2            _LATA3
+#define led3            _LATA4
+#define T1              400 //Timer 1 frequency
+#define dt              1/T1 //Timer 1 duration
+#define c_filter        0.95 //coef of the complementary filter (must be <1)
 
 /******************************************************************************/
 /* Function Prototypes                                                        */
@@ -42,11 +45,13 @@ void ConfigureOscillator(void);    /* Handles clock switching/osc initialization
 void InitApp(void);             /* I/O and Peripheral Initialization          */
 
 // Protos for accelerometer and gyroscope
-unsigned char initAccel(void);
-unsigned char readAccel(int *data);
+unsigned char Initialize_Accel(void);
+unsigned char Read_Accel(int *data);
+void Process_Accel(int * raw_data, float * data);
 
-unsigned char initGyro(void);
-unsigned char readGyro(int *data);
+unsigned char Initialize_Gyro(void);
+unsigned char Read_Gyro(int *data);
+void Process_Gyro(int * raw_data, float * data);
 
 //Protos for T2 and InputCapture
 void Initialize_T2();

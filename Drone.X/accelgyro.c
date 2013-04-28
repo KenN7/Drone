@@ -14,10 +14,11 @@
 #include <stdlib.h>
 #include "accelgyro.h"
 #include "i2c_func.h"
+#include <math.h>
 
 //------------------------- initAccel() -------------------
-// Inicializa o Aceletormetro, retorna um erro caso não consiga
-unsigned char initAccel(void)
+// Initialize accelerometer
+unsigned char Initialize_Accel(void)
 {
         unsigned char error = 0;
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x0A);
@@ -27,18 +28,30 @@ unsigned char initAccel(void)
 }
 
 //------------------------- readAccel() -------------------
-// Le os valores em uma array de 3inteiros, accel_X, accel_Y,accel_Z.
-// Retorna um erro caso não consiga
-unsigned char readAccel(int *data)
+// Reads the values of the accelerometer in an array of 3 integer :
+// accel_X, accel_Y,accel_Z.
+unsigned char Read_Accel(int * raw_data)
 {
         unsigned char error;
-    error = LDByteReadI2C(i2c_ADXL345,ADXL345_OUTPUTS,(unsigned char *)data,6);
+    error = LDByteReadI2C(i2c_ADXL345,ADXL345_OUTPUTS,(unsigned char *)raw_data,6);
         return error;
 }
 
+void Process_Accel(int * raw_data, float * data) //data[0] = X angle, data[1] = Y angle
+{
+    //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
+    //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+    //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
+    data[0] = atan2(raw_data[1],raw_data[2]); //Those 2 formulas can be found on the internet, dunno which to choose
+    //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
+    //data[0] is roll
+    data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
+    //data[1] is pitch
+}
+
 //------------------------- initGyro() -------------------
-// Inicializa o gyro, retorna um erro caso não consiga
-unsigned char initGyro(void)
+// Initialize gyroscope
+unsigned char Initialize_Gyro(void)
 {
         unsigned char error = 0;
         error += LDByteWriteI2C(i2c_ITG3200,ITG3200_DLPF_FS,0x1b);
@@ -47,18 +60,29 @@ unsigned char initGyro(void)
 }
 
 //------------------------- readGyro() -------------------
-// Le os valores em uma array de 4 inteiros, temp, gyro_X, gyro_Y,gyro_Z.
-// Retorna um erro caso não consiga
-unsigned char readGyro(int *data)
+// Reads the values of the gyroscope in an array of 4 integer :
+// temp, gyro_X, gyro_Y,gyro_Z. (but we don't care about temp)
+unsigned char Read_Gyro(int * raw_data)
 {
         unsigned char error, buffer[8];
 
     error = LDByteReadI2C(i2c_ITG3200,ITG3200_OUTPUTS,buffer,8);
 
-        *data++ = (buffer[0]<<8)|buffer[1];
-        *data++ = (buffer[2]<<8)|buffer[3];
-        *data++ = (buffer[4]<<8)|buffer[5];
-        *data++ = (buffer[6]<<8)|buffer[7];
+        *raw_data++ = (buffer[0]<<8)|buffer[1];
+        *raw_data++ = (buffer[2]<<8)|buffer[3];
+        *raw_data++ = (buffer[4]<<8)|buffer[5];
+        *raw_data++ = (buffer[6]<<8)|buffer[7];
 
         return error;
+}
+
+void Process_Gyro(int * raw_data, float * data) //return the calculated gyro angles
+// data[0] = Xangle, data[1] = Yangle, data[2] = Zangle.
+{
+    int gyro_xsens = 14.375; //must tweak those !!
+    int gyro_ysens = 14.375; //14.375 according to datasheet
+    int gyro_zsens = 14.375;
+    data[0] += ((float)raw_data[1]/gyro_xsens)*dt; //data[0] represents the roll angle
+    data[1] += ((float)raw_data[1]/gyro_ysens)*dt; //some use the rate into the filter
+    data[3] += ((float)raw_data[1]/gyro_zsens)*dt;
 }
