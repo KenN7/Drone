@@ -21,10 +21,13 @@
 #include <stdbool.h>       /* Includes true/false definition                  */
 #include "header.h"        /* Function / Parameters                           */
 #include <timer.h>
+#include "delay.h"
+#include <libpic30.h>
 
 /******************************************************************************/
 /* User Functions                                                             */
 /******************************************************************************/
+extern unsigned int InitI2C(void);
 
 void ConfigureOscillator(void)
 {
@@ -48,9 +51,29 @@ void InitApp(void)
     // activation de la priorit� des interruptions
     _NSTDIS = 0;
 
+    InitI2C();
+    __delay_ms(500);
+    Initialize_Accel(); //I2C init
+    Initialize_Gyro();
 
+    Initialize_T2(); //Timer 2 for Input Capture
+    Initialize_IC();
+
+    Initialize_T3(); //Timer 3 for Output compare
+    Initialize_OC();
+
+    Initialize_T1(); //Timer 1 for control loop
+    //LED WARNING :
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500); 
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(1000);
+    //
+    Start_OC();
+    ReStart_T1();
 }
 
+// Some functions definitions
 void Initialize_T1()
 {
     OpenTimer1(T1_OFF & T1_GATE_OFF & T1_PS_1_1 & T1_SOURCE_INT, 0xFFFF);
@@ -65,7 +88,7 @@ void ReStart_T1()
 }
 
 //Runs a complementary filter configured via coef c_filter (in header.h)
-float complementary_filter(float value, float gyro, float accel)
+float Complementary_filter(float value, float gyro, float accel)
 {
     float filtered_value;
     //filtered_value = gyro*a + accel*(1-a); // Here gyro is an angle
@@ -73,6 +96,29 @@ float complementary_filter(float value, float gyro, float accel)
     //COMPLEMENTARY_YANGLE = (COMPLEMENTARY_YANGLE + GYRO_YRATE*dt)*a + ACCEL_YANGLE*(1-a);
     return filtered_value;
 }
+
+/******************************************************************************/
+/* Interrupt Routines                                                         */
+/******************************************************************************/
+/* Add interrupt routine code here. */
+
+void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
+{
+//    Read_Accel(int *data);
+//    Process_Accel(int * raw_data, float * data);
+//
+//    Read_Gyro(int *data);
+//    Process_Gyro(int * raw_data, float * data);
+//
+//    Complementary_filter(float value, float gyro, float accel);
+
+//	PID();
+//      Update_PWM();
+    
+    led1 = !led1;    // On bascule l'�tat de la LED
+    _T1IF = 0;      // On baisse le FLAG
+}
+
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -135,23 +181,3 @@ float complementary_filter(float value, float gyro, float accel)
 /* <compiler installation directory>/doc directory for the latest compiler    */
 /* release.                                                                   */
 /*                                                                            */
-/******************************************************************************/
-/* Interrupt Routines                                                         */
-/******************************************************************************/
-
-/* TODO Add interrupt routine code here. */
-
-void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
-{
-//	Get_Gyro_Rates();
-//	Get_Accel_Values();
-//	Get_Accel_Angles();	
-//
-//	//complementary_filter();
-//	second_order_complementary_filter();
-//
-//	update_PID();
-    
-    led1 = !led1;    // On bascule l'�tat de la LED
-    _T1IF = 0;      // On baisse le FLAG
-}

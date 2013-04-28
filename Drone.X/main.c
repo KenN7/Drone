@@ -22,9 +22,11 @@
 /******************************************************************************/
 /* Global Variable Declaration                                                */
 /******************************************************************************/
-
 /* i.e. uint16_t <variable_name>; */
-
+volatile float throttle_input;
+volatile float roll_input;
+volatile float pitch_input;
+volatile float yaw_input;
 
 /******************************************************************************/
 /* Configuartion                                                              */
@@ -52,7 +54,7 @@ int16_t main(void)
     
     while (1)
     {
-        OC1R = 700;
+       // OC1R = 700;
         __delay_ms(2);
         //  led = !led;
         //  __delay_ms(100);

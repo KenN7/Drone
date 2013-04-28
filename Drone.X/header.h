@@ -42,7 +42,7 @@
 /* TODO User level functions prototypes (i.e. InitApp) go here */
 
 void ConfigureOscillator(void);    /* Handles clock switching/osc initialization */
-void InitApp(void);             /* I/O and Peripheral Initialization          */
+void InitApp(void);             /* I/O and global Initialization         */
 
 // Protos for accelerometer and gyroscope
 unsigned char Initialize_Accel(void);
@@ -67,4 +67,8 @@ void Start_OC();
 //Protos for T1 and the filter for accel and gyros values
 void Initialize_T1();
 void ReStart_T1();
-float complementary_filter(float value, float gyro, float accel);
+float Complementary_filter(float value, float gyro, float accel);
+
+//Protos for motors update and PID
+void PID();
+void Update_PWM();

@@ -56,7 +56,8 @@ unsigned int InitI2C(void)
 	//Consult the dSPIC Data Sheet for information on how to calculate the
 	//Baud Rate.
 
-	I2C1BRG = 0x004f; 
+	//I2C1BRG = 0x004f; //79 ?
+        I2C1BRG = 93;
 
 	//Now we will initialise the I2C peripheral for Master Mode, No Slew Rate
 	//Control, and leave the peripheral switched off.

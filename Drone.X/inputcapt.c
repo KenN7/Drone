@@ -15,6 +15,11 @@
 #include <timer.h>
 #include <incap.h>
 
+extern volatile float throttle_input;
+extern volatile float roll_input;
+extern volatile float pitch_input;
+extern volatile float yaw_input;
+
 /*
  * 
  */
@@ -33,10 +38,10 @@ void ReStart_T2()
 
 void Initialize_IC()
 {
-    _IC1R = 5;
-    _IC2R = 6;
-    _IC7R = 7;
-    _IC8R = 20;
+    _IC1R = 5; //Tie IC1 on RP5
+    _IC2R = 6; //Tie IC2 on RP6
+    _IC7R = 7; //Tie IC7 on RP7
+    _IC8R = 20; //Tie IC8 on RP20
 
     OpenCapture1(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
     OpenCapture2(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
