@@ -2,7 +2,7 @@
 ;                                                                     
 ;                     Software License Agreement                      
 ;                                                                     
-;     ©2007 Microchip Technology Inc
+;     ï¿½2007 Microchip Technology Inc
 ;     Mirochip Technology Inc. ("Microchip") licenses this software to 
 ;     you solely for the use with Microchip Products. The software is
 ;     owned by Microchip and is protected under applicable copyright
@@ -29,7 +29,7 @@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //This file contains the function prototypes for the i2c function
-#define PAGESIZE	32
+#define PAGESIZE 0x00ff
 
 //Low Level Functions
 unsigned int IdleI2C(void);
@@ -39,7 +39,7 @@ unsigned int StopI2C(void);
 unsigned int RestartI2C(void);
 unsigned int getsI2C(unsigned char*, unsigned char);
 unsigned int NotAckI2C(void);
-unsigned int InitI2C(void);
+void InitI2C(void);
 unsigned int ACKStatus(void);
 unsigned int getI2C(void);
 unsigned int AckI2C(void);
@@ -52,8 +52,8 @@ unsigned int LDByteWriteI2C(unsigned char, unsigned char, unsigned char);
 unsigned int LDPageWriteI2C(unsigned char, unsigned char, unsigned char*);
 unsigned int LDSequentialReadI2C(unsigned char, unsigned char, unsigned char*, unsigned char);
 
-//High Level Functions for High Density Devices
-unsigned int HDByteReadI2C(unsigned char, unsigned char, unsigned char, unsigned char*, unsigned char);
-unsigned int HDByteWriteI2C(unsigned char, unsigned char, unsigned char, unsigned char);
-unsigned int HDPageWriteI2C(unsigned char, unsigned char, unsigned char, unsigned char*);
-unsigned int HDSequentialReadI2C(unsigned char, unsigned char, unsigned char, unsigned char*, unsigned char);
+////High Level Functions for High Density Devices
+//unsigned int HDByteReadI2C(unsigned char, unsigned char, unsigned char, unsigned char*, unsigned char);
+//unsigned int HDByteWriteI2C(unsigned char, unsigned char, unsigned char, unsigned char);
+//unsigned int HDPageWriteI2C(unsigned char, unsigned char, unsigned char, unsigned char*);
+//unsigned int HDSequentialReadI2C(unsigned char, unsigned char, unsigned char, unsigned char*, unsigned char);

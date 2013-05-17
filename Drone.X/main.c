@@ -18,7 +18,6 @@
 #include "header.h"        /* Function / Parameters                           */
 #include <libpic30.h>
 
-
 /******************************************************************************/
 /* Global Variable Declaration                                                */
 /******************************************************************************/
@@ -35,7 +34,7 @@ volatile float yaw_input;
 // Select Oscillator and switching.
 _FOSCSEL(FNOSC_FRCPLL & IESO_OFF);
 // Select clock.
-_FOSC(POSCMD_NONE & OSCIOFNC_ON & IOL1WAY_ON & FCKSM_CSDCMD);
+_FOSC(POSCMD_NONE & OSCIOFNC_ON & IOL1WAY_OFF & FCKSM_CSDCMD);
 // Watchdog Timer.
 _FWDT(FWDTEN_OFF);
 // Select debug channel.
@@ -51,12 +50,10 @@ int16_t main(void)
     // Initialize IO ports and peripherals.
     ConfigureOscillator();
     InitApp();
-    
+
     while (1)
     {
        // OC1R = 700;
-        __delay_ms(2);
-        //  led = !led;
         //  __delay_ms(100);
     }
 }

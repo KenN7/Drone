@@ -50,7 +50,8 @@ void InitApp(void)
     //_CN27PUE = 1;
     // activation de la priorit� des interruptions
     _NSTDIS = 0;
-
+    AD1PCFGL = 0x1FF;
+    
     InitI2C();
     __delay_ms(500);
     Initialize_Accel(); //I2C init
@@ -70,13 +71,15 @@ void InitApp(void)
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(1000);
     //
     Start_OC();
+    OC1R = 700;
+    __delay_ms(5000);
     ReStart_T1();
 }
 
 // Some functions definitions
 void Initialize_T1()
 {
-    OpenTimer1(T1_OFF & T1_GATE_OFF & T1_PS_1_1 & T1_SOURCE_INT, 0xFFFF);
+    OpenTimer1(T1_OFF & T1_GATE_OFF & T1_PS_1_8 & T1_SOURCE_INT, 12500);
     ConfigIntTimer1(T1_INT_PRIOR_3 & T1_INT_ON);
 }
 
@@ -101,16 +104,19 @@ float Complementary_filter(float value, float gyro, float accel)
 /* Interrupt Routines                                                         */
 /******************************************************************************/
 /* Add interrupt routine code here. */
+int raw_dataA[3];
+int raw_dataG[4];
+float dataA[2];
+float dataG[3];
 
 void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
-//    Read_Accel(int *data);
-//    Process_Accel(int * raw_data, float * data);
-//
-//    Read_Gyro(int *data);
-//    Process_Gyro(int * raw_data, float * data);
-//
-//    Complementary_filter(float value, float gyro, float accel);
+    Read_Accel(raw_dataA);
+    Read_Gyro(raw_dataG);
+    Process_Accel(raw_dataA, dataA);
+    Process_Gyro(raw_dataG, dataG);
+    OC1R = 5600;
+//     Complementary_filter(float value, float gyro, float accel);
 
 //	PID();
 //      Update_PWM();

@@ -25,7 +25,7 @@ extern volatile float yaw_input;
  */
 void Initialize_T2()
 {
-    OpenTimer2(T2_OFF & T2_GATE_OFF & T2_PS_1_1 & T2_SOURCE_INT, 0xFFFF);
+    OpenTimer2(T2_OFF & T2_GATE_OFF & T2_PS_1_8 & T2_SOURCE_INT, 0xFFFF);
     DisableIntT2;
 }
 

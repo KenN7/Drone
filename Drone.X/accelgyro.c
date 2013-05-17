@@ -42,10 +42,11 @@ void Process_Accel(int * raw_data, float * data) //data[0] = X angle, data[1] = 
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
     //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
-    data[0] = atan2(raw_data[1],raw_data[2]); //Those 2 formulas can be found on the internet, dunno which to choose
+    data[0] = atan2(raw_data[1],raw_data[2])*57.295; //Those 2 formulas can be found on the internet, dunno which to choose
     //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
     //data[0] is roll
-    data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
+    //data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
+    data[1] = -atan2(raw_data[0],raw_data[2])*57.295;
     //data[1] is pitch
 }
 
@@ -82,7 +83,10 @@ void Process_Gyro(int * raw_data, float * data) //return the calculated gyro ang
     int gyro_xsens = 14.375; //must tweak those !!
     int gyro_ysens = 14.375; //14.375 according to datasheet
     int gyro_zsens = 14.375;
+    raw_data[1] = raw_data[1]-(-55);
+    raw_data[2] = raw_data[2]-(49);
+    raw_data[3] = raw_data[3]-(-52);
     data[0] += ((float)raw_data[1]/gyro_xsens)*dt; //data[0] represents the roll angle
-    data[1] += ((float)raw_data[1]/gyro_ysens)*dt; //some use the rate into the filter
-    data[3] += ((float)raw_data[1]/gyro_zsens)*dt;
+    data[1] += ((float)raw_data[2]/gyro_ysens)*dt; //some use the rate into the filter
+    data[2] += ((float)raw_data[3]/gyro_zsens)*dt;
 }
