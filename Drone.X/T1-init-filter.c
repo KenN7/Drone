@@ -40,16 +40,17 @@ void ConfigureOscillator(void)
 
 void InitApp(void)
 {
-    //pin de la LED en sortie
+    //pin des LEDs en sortie
     _TRISA2 = 0;
     _TRISA3 = 0;
     _TRISA4 = 0;
-    //Si on a un interrupteur sur la pin RB5 (par exemple), on la met en entr�e
+    //Si on a un interrupteur sur la pin RB5 (par exemple), on la met en entree
     //_TRISB5 = 1;
     //Et on active la pullup qui va bien (registres CNPU1 et CNPU2)
     //_CN27PUE = 1;
-    // activation de la priorit� des interruptions
+    // activation de la priorite des interruptions
     _NSTDIS = 0;
+    //desactivation des pins analogiques
     AD1PCFGL = 0x1FF;
     
     InitI2C();
@@ -69,10 +70,8 @@ void InitApp(void)
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500); 
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(1000);
-    //
+    
     Start_OC();
-    OC1R = 700;
-    __delay_ms(5000);
     ReStart_T1();
 }
 
@@ -115,7 +114,9 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Read_Gyro(raw_dataG);
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
-    OC1R = 5600;
+    
+    OC1RS = 5600;
+
 //     Complementary_filter(float value, float gyro, float accel);
 
 //	PID();

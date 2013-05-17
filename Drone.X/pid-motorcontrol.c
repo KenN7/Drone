@@ -57,17 +57,17 @@ void Update_PWM()
 {
 //	if(throttle_input==0.0)
 //	{
-//		OC1R = 700;
-//		OC2R = 700;
-//		OC3R = 700;
-//		OC4R = 700;
+//		OC1RS = 700;
+//		OC2RS = 700;
+//		OC3RS = 700;
+//		OC4RS = 700;
 //	}
 //	else
 //	{
-//		OC1R = 0.5*PID_XOUTPUT + -0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
-//		OC4R = -0.5*PID_XOUTPUT + -0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
-//		OC2R = 0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
-//		OC3R = -0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
+//		OC1RS = 0.5*PID_XOUTPUT + -0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
+//		OC4RS = -0.5*PID_XOUTPUT + -0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
+//		OC2RS = 0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
+//		OC3RS = -0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
 //
 //		if(OC1RS > 1.5*throttle*MOTOR_RANGE + MOTOR_MIN)
 //		{OC1RS = 1.5*throttle*MOTOR_RANGE + MOTOR_MIN;}

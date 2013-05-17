@@ -38,10 +38,10 @@ void Initialize_OC()
     _RP12R = 0b10100; //Tie OC3 to RP12
     _RP13R = 0b10101; //Tie OC4 to RP13
 
-    OpenOC1(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 12500, 1000);
-    OpenOC2(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 12500, 1000);
-    OpenOC3(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 12500, 1000);
-    OpenOC4(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 12500, 1000);
+    OpenOC1(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
+    OpenOC2(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
+    OpenOC3(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
+    OpenOC4(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0); //dans l'ordre OCxRS et OCxR
     //OC_PWM_FAULT_PIN_ENABLE
 
     ConfigIntOC1(OC_INT_OFF & OC_INT_PRIOR_2);
@@ -49,7 +49,7 @@ void Initialize_OC()
     ConfigIntOC3(OC_INT_OFF & OC_INT_PRIOR_2);
     ConfigIntOC4(OC_INT_OFF & OC_INT_PRIOR_2);
 }
-// Pour changer la largeur du PWM il faut mettre OC1R entre 5000 (1ms) et 10000 (2ms)
+// Pour changer la largeur du PWM il faut mettre OCxRS entre 5000 (1ms) et 10000 (2ms)
 void Start_OC()
 {
     OC1CONbits.OCM = 0b110;
