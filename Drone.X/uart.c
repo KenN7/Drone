@@ -31,7 +31,7 @@
 /*****************************************************************************/
 
 typedef volatile struct {
-    unsigned char id;
+    unsigned char id[10];
     unsigned char len;
     int params[2]; // fonction parameters
     int rdy; //response ready
@@ -63,6 +63,7 @@ static int state = 0;
 void GetData() {
     unsigned char b;
     int pos;
+    int val = 0;
 
     while(DataRdyUART1())
     {
@@ -72,8 +73,12 @@ void GetData() {
             state = 1;
         else if(state == 1) // id de l'ordre
         {
-            data_RX.id = b;
-            if (b==' ') state = 2;
+            data_RX.id[pos++] = b;
+            if (b==' ')
+            {
+                state = 2;
+                pos = 0;
+            }
         }
         else if(state == 2) //number of params
         {
@@ -81,16 +86,21 @@ void GetData() {
             state = 3;
             pos = data_RX.len;
         }
-        else if(state == 3) //valeur
+        else if(state == 3) //valeurs
         {
-            if (pos == 0 && b==' ') 
+            if (pos == 0) 
             {
                 state = 4;
             }
+            else if (pos > 0 && b==' ')
+            {
+                data_RX.params[data_RX.len-pos] = val;
+                pos--;
+                val = 0;
+            }
             else
             {
-            data_RX.params[data_RX.len-pos] = b;
-            pos--;
+                val = val*10 + b - '0';
             }
         }
         else if(state == 4 && b=='\n') //stop
