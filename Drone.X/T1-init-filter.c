@@ -38,6 +38,20 @@ void ConfigureOscillator(void)
     // Fosc = M/(N1.N2)*Fin
 }
 
+/******************************************************************************/
+/* Global variables                                                             */
+/******************************************************************************/
+
+int raw_dataA[3];
+int raw_dataG[4];
+float dataA[2];
+float dataG[3];
+float filtered_angles[2];
+
+/******************************************************************************/
+/* User Functions                                                             */
+/******************************************************************************/
+
 void InitApp(void)
 {
     //pin des LEDs en sortie
@@ -50,13 +64,14 @@ void InitApp(void)
     //_CN27PUE = 1;
     // activation de la priorite des interruptions
     _NSTDIS = 0;
-    //desactivation des pins analogiques
-    AD1PCFGL = 0x1FF;
+    
+    AD1PCFGL = 0x1FF; //desactivation of analogue pins
     
     InitI2C();
     __delay_ms(500);
     Initialize_Accel(); //I2C init
     Initialize_Gyro();
+    Calibrate_Gyro(raw_dataG);
 
     Initialize_T2(); //Timer 2 for Input Capture
     Initialize_IC();
@@ -90,23 +105,21 @@ void ReStart_T1()
 }
 
 //Runs a complementary filter configured via coef c_filter (in header.h)
-float Complementary_filter(float value, float gyro, float accel)
+
+/*!\ TODO CHECKER SI LES NUMEROS DE TABLEAUX CORRESPONDENT AUX MEMES ANGLES !!! /!\*/
+
+void Complementary_filter(float * filtered, float * data_gyro, float * data_accel)
 {
-    float filtered_value;
-    //filtered_value = gyro*a + accel*(1-a); // Here gyro is an angle
-    filtered_value = (value + gyro*dt)*c_filter + accel*(1-c_filter); // Here gyro is a rate (angle/dt)
+    filtered[0] = data_gyro[0]*c_filter + data_accel[0]*(1-c_filter); // Here gyro is an angle
+    filtered[1] = data_gyro[1]*c_filter + data_accel[1]*(1-c_filter);
+    //filtered_value = (value + gyro*dt)*c_filter + accel*(1-c_filter); // Here gyro is a rate (angle/dt)
     //COMPLEMENTARY_YANGLE = (COMPLEMENTARY_YANGLE + GYRO_YRATE*dt)*a + ACCEL_YANGLE*(1-a);
-    return filtered_value;
 }
 
 /******************************************************************************/
 /* Interrupt Routines                                                         */
 /******************************************************************************/
 /* Add interrupt routine code here. */
-int raw_dataA[3];
-int raw_dataG[4];
-float dataA[2];
-float dataG[3];
 
 void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
@@ -114,10 +127,9 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Read_Gyro(raw_dataG);
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
+    Complementary_filter(filtered_angles, dataG, dataA);
     
     OC1RS = 5600;
-
-//     Complementary_filter(float value, float gyro, float accel);
 
 //	PID();
 //      Update_PWM();

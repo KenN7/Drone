@@ -35,6 +35,9 @@
 #define dt              1/T1 //Timer 1 duration
 #define c_filter        0.95 //coef of the complementary filter (must be <1)
 
+#define UnlockRP        __builtin_write_OSCCONL(OSCCON & 0xBF)
+#define LockRP          __builtin_write_OSCCONL(OSCCON | 0x40)
+
 /******************************************************************************/
 /* Function Prototypes                                                        */
 /******************************************************************************/
@@ -50,6 +53,7 @@ unsigned char Read_Accel(int *data);
 void Process_Accel(int * raw_data, float * data);
 
 unsigned char Initialize_Gyro(void);
+void Calibrate_Gyro(int * raw_data);
 unsigned char Read_Gyro(int *data);
 void Process_Gyro(int * raw_data, float * data);
 
@@ -67,7 +71,7 @@ void Start_OC();
 //Protos for T1 and the filter for accel and gyros values
 void Initialize_T1();
 void ReStart_T1();
-float Complementary_filter(float value, float gyro, float accel);
+void Complementary_filter(float * filtered, float * data_gyro, float * data_accel);
 
 //Protos for motors update and PID
 void PID();

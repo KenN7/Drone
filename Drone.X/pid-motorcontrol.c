@@ -69,16 +69,6 @@ void Update_PWM()
 //		OC2RS = 0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
 //		OC3RS = -0.5*PID_XOUTPUT + 0.5*PID_YOUTPUT + MOTOR_MIN + MOTOR_RANGE*throttle_input;
 //
-//		if(OC1RS > 1.5*throttle*MOTOR_RANGE + MOTOR_MIN)
-//		{OC1RS = 1.5*throttle*MOTOR_RANGE + MOTOR_MIN;}
-//		if(OC2RS > 1.5*throttle*MOTOR_RANGE + MOTOR_MIN)
-//		{OC2RS = 1.5*throttle*MOTOR_RANGE + MOTOR_MIN;}
-//		if(OC3RS > 1.5*throttle*MOTOR_RANGE + MOTOR_MIN)
-//		{OC3RS = 1.5*throttle*MOTOR_RANGE + MOTOR_MIN;}
-//		if(OC4RS > 1.5*throttle*MOTOR_RANGE + MOTOR_MIN)
-//		{OC4RS = 1.5*throttle*MOTOR_RANGE + MOTOR_MIN;}
-//
-//
 //		if(OC1RS > MOTOR_MAX) {OC1R = MOTOR_MAX;}
 //		if(OC2RS > MOTOR_MAX) {OC2R = MOTOR_MAX;}
 //		if(OC3RS > MOTOR_MAX) {OC3R = MOTOR_MAX;}

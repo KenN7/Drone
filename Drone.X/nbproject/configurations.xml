@@ -22,6 +22,7 @@
       <itemPath>i2c_func.c</itemPath>
       <itemPath>T1-init-filter.c</itemPath>
       <itemPath>pid-motorcontrol.c</itemPath>
+      <itemPath>uart.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

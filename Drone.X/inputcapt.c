@@ -38,10 +38,12 @@ void ReStart_T2()
 
 void Initialize_IC()
 {
+    UnlockRP;
     _IC1R = 5; //Tie IC1 on RP5
     _IC2R = 6; //Tie IC2 on RP6
     _IC7R = 7; //Tie IC7 on RP7
     _IC8R = 20; //Tie IC8 on RP20
+    LockRP;
 
     OpenCapture1(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
     OpenCapture2(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
@@ -106,7 +108,14 @@ void __attribute__((interrupt, auto_psv)) _IC7Interrupt(void)
 	useless = IC7BUF;
     }
     else if(!_RB7)
-    {
+    {                           //Pour l'asserv, on convertit les valeurs de
+                                //5000 à 10000 de l'entree en angle avec une regle de 3
+                                // c'est ANGLE_RANGE qui fixe l'angle max
+                                // l'angle max choisi est 30deg, donc de -15 a +15
+                                // je pense quon peut aller bien au dessus.
+                                // il est peut etre habile de deporter les calculs
+                                // dans le mm ficier qe le PID pour limiter les
+                                // variables globales gitanes entres fichiers.
 //	roll_input = IC7BUF;
 //    	TARGET_XANGLE = XANGLE_RANGE*(roll_input - ROLL_MID)/(ROLL_MAX - ROLL_MIN);
 //    	//if(TARGET_XANGLE < 1.0 && TARGET_XANGLE > -1.0) {TARGET_XANGLE = 0;}

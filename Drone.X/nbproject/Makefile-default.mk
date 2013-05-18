@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/inputcapt.o.d ${OBJECTDIR}/outputcompare.o.d ${OBJECTDIR}/accelgyro.o.d ${OBJECTDIR}/i2c_func.o.d ${OBJECTDIR}/T1-init-filter.o.d ${OBJECTDIR}/pid-motorcontrol.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/inputcapt.o.d ${OBJECTDIR}/outputcompare.o.d ${OBJECTDIR}/accelgyro.o.d ${OBJECTDIR}/i2c_func.o.d ${OBJECTDIR}/T1-init-filter.o.d ${OBJECTDIR}/pid-motorcontrol.o.d ${OBJECTDIR}/uart.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o
 
 
 CFLAGS=
@@ -115,6 +115,12 @@ ${OBJECTDIR}/pid-motorcontrol.o: pid-motorcontrol.c  nbproject/Makefile-${CND_CO
 	${MP_CC} $(MP_EXTRA_CC_PRE)  pid-motorcontrol.c  -o ${OBJECTDIR}/pid-motorcontrol.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/pid-motorcontrol.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/pid-motorcontrol.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/uart.o: uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/uart.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  uart.c  -o ${OBJECTDIR}/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/uart.o.d"        -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -157,6 +163,12 @@ ${OBJECTDIR}/pid-motorcontrol.o: pid-motorcontrol.c  nbproject/Makefile-${CND_CO
 	@${RM} ${OBJECTDIR}/pid-motorcontrol.o.d 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  pid-motorcontrol.c  -o ${OBJECTDIR}/pid-motorcontrol.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/pid-motorcontrol.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/pid-motorcontrol.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/uart.o: uart.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/uart.o.d 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  uart.c  -o ${OBJECTDIR}/uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/uart.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/uart.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

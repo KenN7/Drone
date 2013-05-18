@@ -77,16 +77,29 @@ unsigned char Read_Gyro(int * raw_data)
         return error;
 }
 
+static float GyroOffset[3];
+void Calibrate_Gyro(int * raw_data)
+{
+    int i;
+    for (i=0;i<50;i++)
+    {
+        Read_Gyro(raw_data);
+        GyroOffset[0] += raw_data[1];
+        GyroOffset[1] += raw_data[2];
+        GyroOffset[2] += raw_data[3];
+    }
+    GyroOffset[0] = GyroOffset[0]/50; //approx -55
+    GyroOffset[1] = GyroOffset[1]/50; // approx 49
+    GyroOffset[2] = GyroOffset[2]/50; //approx -52
+}
+
 void Process_Gyro(int * raw_data, float * data) //return the calculated gyro angles
 // data[0] = Xangle, data[1] = Yangle, data[2] = Zangle.
 {
     int gyro_xsens = 14.375; //must tweak those !!
     int gyro_ysens = 14.375; //14.375 according to datasheet
     int gyro_zsens = 14.375;
-    raw_data[1] = raw_data[1]-(-55);
-    raw_data[2] = raw_data[2]-(49);
-    raw_data[3] = raw_data[3]-(-52);
-    data[0] += ((float)raw_data[1]/gyro_xsens)*dt; //data[0] represents the roll angle
-    data[1] += ((float)raw_data[2]/gyro_ysens)*dt; //some use the rate into the filter
-    data[2] += ((float)raw_data[3]/gyro_zsens)*dt;
+    data[0] += (((float)raw_data[1]-GyroOffset[0])/gyro_xsens)*dt; //data[0] represents the roll angle
+    data[1] += (((float)raw_data[2]-GyroOffset[1])/gyro_ysens)*dt; //some use the rate into the filter
+    data[2] += (((float)raw_data[3]-GyroOffset[2])/gyro_zsens)*dt;
 }

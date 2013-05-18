@@ -33,10 +33,12 @@ void ReStart_T3()
 }
 void Initialize_OC()
 {
+    UnlockRP;
     _RP10R = 0b10010; //Tie OC1 to RP10
     _RP11R = 0b10011; //Tie OC2 to RP11
     _RP12R = 0b10100; //Tie OC3 to RP12
     _RP13R = 0b10101; //Tie OC4 to RP13
+    LockRP;
 
     OpenOC1(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
     OpenOC2(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
