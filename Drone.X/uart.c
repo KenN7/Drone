@@ -26,6 +26,18 @@
 #define BAUDRATE 115200
 #define BRGVAL ((FCY / BAUDRATE / 16) - 1)
 
+/*****************************************************************************/
+/*                   Global variable of Uart received data                   */
+/*****************************************************************************/
+
+typedef volatile struct {
+    unsigned char id;
+    unsigned char len;
+    int params[2]; // fonction parameters
+    int rdy; //response ready
+} uart_data;
+uart_data data_RX;
+
 void Init_UART()
 {
     OpenUART1(UART_EN & UART_IDLE_CON & UART_IrDA_DISABLE & UART_MODE_FLOW
@@ -47,33 +59,48 @@ void Init_UART()
 }
 
 static int state = 0;
+
 void GetData() {
     unsigned char b;
+    int pos;
+
     while(DataRdyUART1())
     {
         b = ReadUART1();
 
-        if(state == 0 && b == '\n')
+        if(state == 0 && b == 's') //start
             state = 1;
-        else if(state == 1)
+        else if(state == 1) // id de l'ordre
         {
-            posAX = -3;
-            checksumAX = 0;
-            responseAX.len = 1;
+            data_RX.id = b;
+            if (b==' ') state = 2;
         }
-        else if(state == 2)
+        else if(state == 2) //number of params
         {
-            posAX = -2;
-            responseAX.id = b;
+            data_RX.len = b;
+            state = 3;
+            pos = data_RX.len;
         }
-        else if(state == 3 && b < 2 + 4 /*taille de ax.parameters*/)
+        else if(state == 3) //valeur
         {
-            posAX = -1;
-            checksumAX = responseAX.id + b;
-            responseAX.len = b - 2;
+            if (pos == 0 && b==' ') 
+            {
+                state = 4;
+            }
+            else
+            {
+            data_RX.params[data_RX.len-pos] = b;
+            pos--;
+            }
+        }
+        else if(state == 4 && b=='\n') //stop
+        {
+             data_RX.rdy = 1;
         }
         else
-            posAX = -5; // Erreur.
+        {
+             data_RX.rdy = -1; // Erreur.
+        }
     }
 }
 
@@ -85,7 +112,8 @@ void GetData() {
 
 void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void)
 {
- //   Machine();
+     data_RX.rdy = 0;
+     GetData();
     _U1RXIF = 0;      // On baisse le FLAG
 }
 
