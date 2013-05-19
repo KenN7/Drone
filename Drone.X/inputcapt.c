@@ -67,7 +67,7 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void)
     }
     else if(!_RB5)
     {
-       // yaw_input = IC1BUF;
+        yaw_input = IC1BUF;
        // TARGET_ZRATE = ZRATE_RANGE*(yaw_input - YAW_MID)/(YAW_MAX - YAW_MIN);
         //if(TARGET_ZRATE < 1.0 && TARGET_ZRATE > -1.0) {TARGET_ZRATE = 0;}
     }
@@ -85,7 +85,7 @@ void __attribute__((interrupt, auto_psv)) _IC2Interrupt(void)
     }
     else if(!_RB6)
     {
-//	throttle_input = IC2BUF;
+        throttle_input = IC2BUF;
 //	if(throttle_input <= THROTTLE_THRESHOLD)
 //    	{
 //            throttle = 0.0;
@@ -110,13 +110,13 @@ void __attribute__((interrupt, auto_psv)) _IC7Interrupt(void)
     else if(!_RB7)
     {                           //Pour l'asserv, on convertit les valeurs de
                                 //5000 à 10000 de l'entree en angle avec une regle de 3
-                                // c'est ANGLE_RANGE qui fixe l'angle max
+                                // c'est ANGLE_RANGE qui fixe l'angle max.
                                 // l'angle max choisi est 30deg, donc de -15 a +15
                                 // je pense quon peut aller bien au dessus.
                                 // il est peut etre habile de deporter les calculs
                                 // dans le mm ficier qe le PID pour limiter les
                                 // variables globales gitanes entres fichiers.
-//	roll_input = IC7BUF;
+        roll_input = IC7BUF;
 //    	TARGET_XANGLE = XANGLE_RANGE*(roll_input - ROLL_MID)/(ROLL_MAX - ROLL_MIN);
 //    	//if(TARGET_XANGLE < 1.0 && TARGET_XANGLE > -1.0) {TARGET_XANGLE = 0;}
     }
@@ -134,7 +134,7 @@ void __attribute__((interrupt, auto_psv)) _IC8Interrupt(void)
     }
     else if(!_RC4)
     {
-//	pitch_input = IC8BUF;
+        pitch_input = IC8BUF;
 //	TARGET_YANGLE = YANGLE_RANGE*(float)((float)(pitch_input - PITCH_MID)/(PITCH_MAX - PITCH_MIN));
 //	//if(TARGET_YANGLE < 1.0 && TARGET_YANGLE > -1.0) {TARGET_YANGLE = 0;}
     }

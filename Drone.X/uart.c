@@ -69,28 +69,26 @@ void GetData() {
     {
         b = ReadUART1();
 
-        if(state == 0 && b == 's') //start
-            state = 1;
-        else if(state == 1) // id de l'ordre
+        if(state == 0) // id de l'ordre
         {
             data_RX.id[pos++] = b;
             if (b==' ')
             {
-                state = 2;
+                state = 1;
                 pos = 0;
             }
         }
-        else if(state == 2) //number of params
+        else if(state == 1) //number of params
         {
             data_RX.len = b;
-            state = 3;
+            state = 2;
             pos = data_RX.len;
         }
-        else if(state == 3) //valeurs
+        else if(state == 2) //valeurs
         {
             if (pos == 0) 
             {
-                state = 4;
+                state = 3;
             }
             else if (pos > 0 && b==' ')
             {
@@ -103,14 +101,78 @@ void GetData() {
                 val = val*10 + b - '0';
             }
         }
-        else if(state == 4 && b=='\n') //stop
+        else if(state == 3 && b=='\n') //stop
         {
              data_RX.rdy = 1;
+             state = 0;
         }
         else
         {
              data_RX.rdy = -1; // Erreur.
+             state = 0;
         }
+    }
+}
+
+void PutCharUART1(unsigned char b)
+{
+    while(BusyUART1());
+    WriteUART1(b);
+}
+
+void PutLong(long i)
+{
+    long j;
+    if( i<0 )
+    {
+        PutCharUART1('-');
+        if (i != 2166136261u)
+        {
+            j = -i;
+        }
+        else 
+        {
+            PutCharUART1('2');
+            j = 147483648;
+        }   
+    }
+    else j=i;
+    if (j/10)
+        PutLong(j/10);
+    PutCharUART1('0' + j % 10);
+}
+
+void ProcessRxData()
+{
+//typedef volatile struct {
+//    unsigned char id[10];
+//    unsigned char len;
+//    int params[2]; // fonction parameters
+//    int rdy; //response ready
+//} uart_data;
+
+    if (data_RX.rdy = 1)
+    {
+        if ((strcmp(data_RX.id, "getid"))==0)
+        {
+            putsUART1((unsigned int*)"id drone = 1\n");
+        }
+        else if ((strcmp(data_RX.id, "Kp"))==0)
+        {
+            putsUART1((unsigned int*)"val de Kp :\n");
+        }
+        else
+        {
+            putsUART1((unsigned int*)"id not recognized!");
+        }
+    }
+    else if (data_RX.rdy = -1)
+    {
+        putsUART1((unsigned int*)"Reception Error!\n");
+    }
+    else
+    {
+        putsUART1((unsigned int*)"Data not rdy!\n");
     }
 }
 
@@ -124,6 +186,7 @@ void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void)
 {
      data_RX.rdy = 0;
      GetData();
+     ProcessRxData();
     _U1RXIF = 0;      // On baisse le FLAG
 }
 
