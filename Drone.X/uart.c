@@ -31,11 +31,12 @@
 /*****************************************************************************/
 
 typedef volatile struct {
-    unsigned char id[10];
-    unsigned char len;
+    unsigned char id[10]; //id of message
+    unsigned char len; //lengh of message
     int params[2]; // fonction parameters
     int rdy; //response ready
 } uart_data;
+
 uart_data data_RX;
 
 void Init_UART()
@@ -60,7 +61,8 @@ void Init_UART()
 
 static int state = 0;
 
-void GetData() {
+void GetData()
+{
     unsigned char b;
     int pos;
     int val = 0;

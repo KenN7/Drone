@@ -44,7 +44,6 @@ void Initialize_OC()
     OpenOC2(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
     OpenOC3(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0);
     OpenOC4(OC_IDLE_CON & OC_TIMER3_SRC & OC_OFF, 1000, 0); //dans l'ordre OCxRS et OCxR
-    //OC_PWM_FAULT_PIN_ENABLE
 
     ConfigIntOC1(OC_INT_OFF & OC_INT_PRIOR_2);
     ConfigIntOC2(OC_INT_OFF & OC_INT_PRIOR_2);
@@ -54,7 +53,7 @@ void Initialize_OC()
 // Pour changer la largeur du PWM il faut mettre OCxRS entre 5000 (1ms) et 10000 (2ms)
 void Start_OC()
 {
-    OC1CONbits.OCM = 0b110;
+    OC1CONbits.OCM = 0b110; //OC_PWM_FAULT_PIN_ENABLE
     OC2CONbits.OCM = 0b110;
     OC3CONbits.OCM = 0b110;
     OC4CONbits.OCM = 0b110;

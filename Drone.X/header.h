@@ -76,3 +76,10 @@ void Complementary_filter(float * filtered, float * data_gyro, float * data_acce
 //Protos for motors update and PID
 void PID();
 void Update_PWM();
+
+//Protos for UART
+void Init_UART();
+void GetData();
+void PutCharUART1(unsigned char b);
+void PutLong(long i);
+void ProcessRxData();
