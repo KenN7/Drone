@@ -42,11 +42,11 @@ void ConfigureOscillator(void)
 /* Global variables                                                             */
 /******************************************************************************/
 
-int raw_dataA[3];
-int raw_dataG[4];
-float dataA[2];
-float dataG[3];
-float filtered_angles[2];
+volatile int raw_dataA[3];
+volatile int raw_dataG[4];
+volatile float dataA[2];
+volatile float dataG[3];
+volatile float filtered_angles[2];
 
 /******************************************************************************/
 /* User Functions                                                             */
@@ -85,8 +85,12 @@ void InitApp(void)
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500); 
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(1000);
-    
+
     Start_OC();
+    //OC1RS = 5000;OC2RS = 5000;OC3RS = 5000;OC4RS = 5000;
+
+    //__delay_ms(3000);
+
     ReStart_T1();
 }
 
@@ -108,7 +112,7 @@ void ReStart_T1()
 
 /*!\ TODO CHECKER SI LES NUMEROS DE TABLEAUX CORRESPONDENT AUX MEMES ANGLES !!! /!\*/
 
-void Complementary_filter(float * filtered, float * data_gyro, float * data_accel)
+void Complementary_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
 {
     filtered[0] = data_gyro[0]*c_filter + data_accel[0]*(1-c_filter); // Here gyro is an angle
     filtered[1] = data_gyro[1]*c_filter + data_accel[1]*(1-c_filter);
@@ -128,13 +132,12 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
     Complementary_filter(filtered_angles, dataG, dataA);
-    
-    OC1RS = 5600;
 
-//	PID();
-//      Update_PWM();
+    //min motor 6500;
+    PID();
+    Update_PWM();
     
-    led1 = !led1;    // On bascule l'�tat de la LED
+    led1 = !led1;    // On bascule l'etat de la LED
     _T1IF = 0;      // On baisse le FLAG
 }
 

@@ -30,14 +30,14 @@ unsigned char Initialize_Accel(void)
 //------------------------- readAccel() -------------------
 // Reads the values of the accelerometer in an array of 3 integer :
 // accel_X, accel_Y,accel_Z.
-unsigned char Read_Accel(int * raw_data)
+unsigned char Read_Accel(volatile int * raw_data)
 {
         unsigned char error;
     error = LDByteReadI2C(i2c_ADXL345,ADXL345_OUTPUTS,(unsigned char *)raw_data,6);
         return error;
 }
 
-void Process_Accel(int * raw_data, float * data) //data[0] = X angle, data[1] = Y angle
+void Process_Accel(volatile int * raw_data,volatile float * data) //data[0] = X angle, data[1] = Y angle
 {
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
@@ -63,7 +63,7 @@ unsigned char Initialize_Gyro(void)
 //------------------------- readGyro() -------------------
 // Reads the values of the gyroscope in an array of 4 integer :
 // temp, gyro_X, gyro_Y,gyro_Z. (but we don't care about temp)
-unsigned char Read_Gyro(int * raw_data)
+unsigned char Read_Gyro(volatile int * raw_data)
 {
         unsigned char error, buffer[8];
 
@@ -78,7 +78,7 @@ unsigned char Read_Gyro(int * raw_data)
 }
 
 static float GyroOffset[3];
-void Calibrate_Gyro(int * raw_data)
+void Calibrate_Gyro(volatile int * raw_data)
 {
     int i;
     for (i=0;i<50;i++)
@@ -87,13 +87,14 @@ void Calibrate_Gyro(int * raw_data)
         GyroOffset[0] += raw_data[1];
         GyroOffset[1] += raw_data[2];
         GyroOffset[2] += raw_data[3];
+        __delay_ms(100);
     }
     GyroOffset[0] = GyroOffset[0]/50; //approx -55
     GyroOffset[1] = GyroOffset[1]/50; // approx 49
     GyroOffset[2] = GyroOffset[2]/50; //approx -52
 }
 
-void Process_Gyro(int * raw_data, float * data) //return the calculated gyro angles
+void Process_Gyro(volatile int * raw_data, volatile float * data) //return the calculated gyro angles
 // data[0] = Xangle, data[1] = Yangle, data[2] = Zangle.
 {
     int gyro_xsens = 14.375; //must tweak those !!

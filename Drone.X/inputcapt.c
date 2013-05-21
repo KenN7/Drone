@@ -42,8 +42,13 @@ void Initialize_IC()
     _IC1R = 5; //Tie IC1 on RP5
     _IC2R = 6; //Tie IC2 on RP6
     _IC7R = 7; //Tie IC7 on RP7
-    _IC8R = 20; //Tie IC8 on RP20
+    _IC8R = 19; //Tie IC8 on RP20
     LockRP;
+    
+    _TRISB5 = 1;
+    _TRISB6 = 1;
+    _TRISB7 = 1;
+    _TRISC4 = 1;
 
     OpenCapture1(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
     OpenCapture2(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
@@ -67,7 +72,7 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void)
     }
     else if(!_RB5)
     {
-        yaw_input = IC1BUF;
+        throttle_input = IC1BUF;
     }
    // Reset_Timer4(); //Watchdog Timer
     _IC1IF = 0; //Clear IC1 interrupt flag
@@ -83,7 +88,7 @@ void __attribute__((interrupt, auto_psv)) _IC2Interrupt(void)
     }
     else if(!_RB6)
     {
-        throttle_input = IC2BUF;
+        roll_input = IC2BUF;
     }
 //  Reset_Timer4(); //Watchdog Timer
     _IC2IF = 0; //Clear IC2 interrupt flag
@@ -99,7 +104,7 @@ void __attribute__((interrupt, auto_psv)) _IC7Interrupt(void)
     }
     else if(!_RB7)
     {
-        roll_input = IC7BUF;
+        pitch_input = IC7BUF;
     }
 //   Reset_Timer4(); //Watchdog Timer
     _IC7IF = 0; //Clear IC7 interrupt flag
@@ -108,14 +113,14 @@ void __attribute__((interrupt, auto_psv)) _IC7Interrupt(void)
 void __attribute__((interrupt, auto_psv)) _IC8Interrupt(void)
 {
     int useless;
-    if(_RC4)
+    if(_RC3)
     {
 	ReStart_T2();
 	useless = IC8BUF;
     }
-    else if(!_RC4)
+    else if(!_RC3)
     {
-        pitch_input = IC8BUF;
+        yaw_input = IC8BUF;
     }
     //Reset_Timer4(); //Watchdog Timer
     _IC8IF = 0; //Clear IC8 interrupt flag

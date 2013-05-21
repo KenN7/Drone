@@ -153,7 +153,7 @@ void ProcessRxData()
 //    int rdy; //response ready
 //} uart_data;
 
-    if (data_RX.rdy = 1)
+    if (data_RX.rdy == 1)
     {
         if ((strcmp(data_RX.id, "getid"))==0)
         {
@@ -168,7 +168,7 @@ void ProcessRxData()
             putsUART1((unsigned int*)"id not recognized!");
         }
     }
-    else if (data_RX.rdy = -1)
+    else if (data_RX.rdy == -1)
     {
         putsUART1((unsigned int*)"Reception Error!\n");
     }

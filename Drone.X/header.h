@@ -49,13 +49,13 @@ void InitApp(void);             /* I/O and global Initialization         */
 
 // Protos for accelerometer and gyroscope
 unsigned char Initialize_Accel(void);
-unsigned char Read_Accel(int *data);
-void Process_Accel(int * raw_data, float * data);
+unsigned char Read_Accel(volatile int *data);
+void Process_Accel(volatile int * raw_data, volatile float * data);
 
 unsigned char Initialize_Gyro(void);
-void Calibrate_Gyro(int * raw_data);
-unsigned char Read_Gyro(int *data);
-void Process_Gyro(int * raw_data, float * data);
+void Calibrate_Gyro(volatile int * raw_data);
+unsigned char Read_Gyro(volatile int *data);
+void Process_Gyro(volatile int * raw_data, volatile float * data);
 
 //Protos for T2 and InputCapture
 void Initialize_T2();
@@ -71,7 +71,7 @@ void Start_OC();
 //Protos for T1 and the filter for accel and gyros values
 void Initialize_T1();
 void ReStart_T1();
-void Complementary_filter(float * filtered, float * data_gyro, float * data_accel);
+void Complementary_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel);
 
 //Protos for motors update and PID
 void PID();
