@@ -19,6 +19,7 @@
 #include <p33Fxxxx.h>      /* Includes device header file                     */
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
+#include <stdio.h>
 #include "header.h"        /* Function / Parameters                           */
 #include <timer.h>
 #include "delay.h"
@@ -79,6 +80,7 @@ void InitApp(void)
     Initialize_T3(); //Timer 3 for Output compare
     Initialize_OC();
 
+    Init_UART(); //Init UART for debug
     Initialize_T1(); //Timer 1 for control loop
     //LED WARNING :
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
@@ -134,6 +136,8 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
     Complementary_filter(filtered_angles, dataG, dataA);
+
+    printf("%g,%g,%g",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
 
     //min motor 6500; ??
     PID();
