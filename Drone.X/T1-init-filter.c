@@ -48,6 +48,10 @@ volatile int raw_dataG[4];
 volatile float dataA[2];
 volatile float dataG[3];
 volatile float filtered_angles[2];
+volatile float filtered_angles2[2]={0,0};
+
+volatile float filter_xterm[3] = {0,0,0};
+volatile float filter_yterm[3] = {0,0,0};
 
 /******************************************************************************/
 /* User Functions                                                             */
@@ -125,6 +129,20 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
     //il faut faire confiance au gyro et corriger avec l'accel !!!
 }
 
+
+#define timeConstant 0.1
+void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
+{
+    filter_xterm[0] = (data_accel[0] - filtered[0]) * timeConstant * timeConstant;
+    filter_yterm[0] = (data_accel[1] - filtered[1]) * timeConstant * timeConstant;
+    filter_xterm[2] += (dt * filter_xterm[0]);
+    filter_yterm[2] += (dt * filter_yterm[0]);
+    filter_xterm[1] = filter_xterm[2] + (data_accel[0] - filtered[0]) * 2 * timeConstant + data_gyro[0];
+    filter_yterm[1] = filter_yterm[2] + (data_accel[1] - filtered[1]) * 2 * timeConstant + data_gyro[1];
+
+    filtered[0] += (dt * filter_xterm[1]);
+    filtered[1] += (dt * filter_yterm[1]);
+}
 /******************************************************************************/
 /* Interrupt Routines                                                         */
 /******************************************************************************/
@@ -138,9 +156,9 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
     Complementary_filter(filtered_angles, dataG, dataA);
-
-    printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
-
+    Snd_filter(filtered_angles2, dataG, dataA);
+    printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
+    
     //min motor 6500; ??
     PID();
     Update_PWM();

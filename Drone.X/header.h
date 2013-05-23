@@ -72,6 +72,7 @@ void Start_OC();
 void Initialize_T1();
 void ReStart_T1();
 void Complementary_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel);
+void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel);
 
 //Protos for motors update and PID
 void PID();

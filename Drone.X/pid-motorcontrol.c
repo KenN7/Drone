@@ -49,11 +49,11 @@ volatile float ERROR[3]; //X, Y , Z
 volatile float DIFFERENTIAL[3];
 volatile float INTEGRAL[2];
 
-float KP = 10.0; //25 27/6/12
-float KI = 0.0; //85 5/6/12
-float KD = 0.0; //7 27/6/12
+float KP = 7.0; //25 27/6/12
+float KI = 0.6; //85 5/6/12
+float KD = 1; //7 27/6/12
 
-float ZKP = 0.0; //40 8/6/12
+float ZKP = 10.0; //40 8/6/12
 float ZKD = 0.0; //25 8/6/12
 
 
@@ -65,13 +65,13 @@ void PID()
     float TYangle = 0;
 
     TZrate = PLAGE_ZRATE*(float)((float)yaw_input - MES_MID)/(MES_MAX - MES_MIN);
-    if(TZrate > 1.0 || TZrate < -1.0) {TZrate = 0;}
+    if(TZrate > PLAGE_ZRATE || TZrate < -PLAGE_ZRATE) {TZrate = 0;}
 
-    //TXangle = PLAGE_XANGLE*(float)((float)roll_input - MES_MID)/(MES_MAX - MES_MIN);
-    if(TXangle > 1.0 || TXangle < -1.0) {TXangle = 0;}
+    TXangle = PLAGE_XANGLE*(float)((float)roll_input - MES_MID)/(MES_MAX - MES_MIN);
+    if(TXangle > PLAGE_XANGLE || TXangle < -PLAGE_XANGLE) {TXangle = 0;}
 
-    //TYangle = PLAGE_YANGLE*(float)((float)(pitch_input - MES_MID)/(MES_MAX - MES_MIN));
-    if(TYangle > 1.0 || TYangle < -1.0) {TYangle = 0;}
+    TYangle = PLAGE_YANGLE*(float)((float)(pitch_input - MES_MID)/(MES_MAX - MES_MIN));
+    if(TYangle > PLAGE_YANGLE || TYangle < -PLAGE_YANGLE) {TYangle = 0;}
     
                                //Pour l'asserv, on convertit les valeurs de
                                 //5000 à 10000 de l'entree en angle avec une regle de 3
