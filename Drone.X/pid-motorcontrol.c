@@ -17,7 +17,7 @@
 /*                            Definitions                                     */
 /******************************************************************************/
 #define MIN_PWM 6000
-#define MAX_PWM 8500
+#define MAX_PWM 7500 //tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
 #define MES_MIN 5500
 #define MES_MAX 9500
 #define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))
@@ -49,7 +49,7 @@ volatile float ERROR[3]; //X, Y , Z
 volatile float DIFFERENTIAL[3];
 volatile float INTEGRAL[2];
 
-float KP = 70.0; //25 27/6/12
+float KP = 10.0; //25 27/6/12
 float KI = 0.0; //85 5/6/12
 float KD = 0.0; //7 27/6/12
 
@@ -118,7 +118,7 @@ void PID()
 void Update_PWM()
 {
     float throttle;
-    if(throttle_input <= 6000)
+    if(throttle_input <= 5700)
     {
         throttle = 0;
     }

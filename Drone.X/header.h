@@ -33,7 +33,7 @@
 #define led3            _LATA4
 #define T1              400 //Timer 1 frequency
 #define dt              1/T1 //Timer 1 duration
-#define c_filter        0.95 //coef of the complementary filter (must be <1)
+#define c_filter        0.90 //coef of the complementary filter (must be <1)
 
 #define UnlockRP        __builtin_write_OSCCONL(OSCCON & 0xBF)
 #define LockRP          __builtin_write_OSCCONL(OSCCON | 0x40)

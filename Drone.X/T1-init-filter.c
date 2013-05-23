@@ -81,6 +81,8 @@ void InitApp(void)
     Initialize_OC();
 
     Init_UART(); //Init UART for debug
+    printf("UART OK");
+
     Initialize_T1(); //Timer 1 for control loop
     //LED WARNING :
     led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
@@ -137,7 +139,7 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Process_Gyro(raw_dataG, dataG);
     Complementary_filter(filtered_angles, dataG, dataA);
 
-    printf("%g,%g,%g",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
+    printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
 
     //min motor 6500; ??
     PID();
