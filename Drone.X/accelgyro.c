@@ -42,11 +42,20 @@ void Process_Accel(volatile int * raw_data,volatile float * data) //data[0] = X 
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
     //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
-    data[0] = atan2(raw_data[1],raw_data[2])*57.295; //Those 2 formulas can be found on the internet, dunno which to choose
+    
+    // qui marchait //data[0] = atan2(raw_data[1],raw_data[2])*57.295; //Those 2 formulas can be found on the internet, dunno which to choose
+
     //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
     //data[0] is roll
     //data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
-    data[1] = -atan2(raw_data[0],raw_data[2])*57.295;
+    
+    //qui marchait //data[1] = atan2(raw_data[0],raw_data[2])*57.295;
+    
+    //accelAngleX = atan2(x ,sqrt(ySquared + zSquared));
+    //accelAngleY = atan2(y ,sqrt(xSquared + zSquared));
+    //test :
+    data[0] = atan2(raw_data[0], sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]))*57.295;
+    data[1] = atan2(raw_data[1], sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]))*57.295;
     //data[1] is pitch
 }
 
@@ -87,7 +96,10 @@ void Calibrate_Gyro(volatile int * raw_data)
         GyroOffset[0] += raw_data[1];
         GyroOffset[1] += raw_data[2];
         GyroOffset[2] += raw_data[3];
-        __delay_ms(100);
+        __delay_ms(70);
+        led1 = !led2;
+        led3 = !led1;
+        led2 = !led3;
     }
     GyroOffset[0] = GyroOffset[0]/50; //approx -55
     GyroOffset[1] = GyroOffset[1]/50; // approx 49
@@ -98,7 +110,7 @@ void Process_Gyro(volatile int * raw_data, volatile float * data) //return the c
 // data[0] = Xangle, data[1] = Yangle, data[2] = Zangle.
 {
     int gyro_xsens = 14.375; //must tweak those !!
-    int gyro_ysens = 14.375; //14.375 according to datasheet
+    int gyro_ysens = -14.375; //14.375 according to datasheet // WHAAAAAAAAAAAAAAAAAAAAAAAAAAATTTTTTTT ?????
     int gyro_zsens = 14.375;
     data[0] += (((float)raw_data[1]-GyroOffset[0])/gyro_xsens)*dt; //data[0] represents the roll angle
     data[1] += (((float)raw_data[2]-GyroOffset[1])/gyro_ysens)*dt; //some use the rate into the filter

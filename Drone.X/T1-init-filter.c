@@ -1,7 +1,7 @@
 /*
 * Template dsPIC33F
 * Compiler : Microchip xC16
-* �C : 33FJ64MC802
+* uC : 33FJ64MC804
 * Juillet 2012
 *    ____________      _           _
 *   |___  /| ___ \    | |         | |
@@ -114,10 +114,11 @@ void ReStart_T1()
 
 void Complementary_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
 {
-    filtered[0] = data_gyro[0]*c_filter + data_accel[0]*(1-c_filter); // Here gyro is an angle
-    filtered[1] = data_gyro[1]*c_filter + data_accel[1]*(1-c_filter);
+    filtered[0] = data_gyro[0]*(c_filter) + data_accel[0]*(1-c_filter); // Here gyro is an angle
+    filtered[1] = data_gyro[1]*(c_filter) + data_accel[1]*(1-c_filter);
     //filtered_value = (value + gyro*dt)*c_filter + accel*(1-c_filter); // Here gyro is a rate (angle/dt)
     //COMPLEMENTARY_YANGLE = (COMPLEMENTARY_YANGLE + GYRO_YRATE*dt)*a + ACCEL_YANGLE*(1-a);
+    //il faut faire confiance au gyro et corriger avec l'accel !!!
 }
 
 /******************************************************************************/
@@ -127,18 +128,19 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
 
 void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
+    _T1IF = 0;      // On baisse le FLAG
     Read_Accel(raw_dataA);
     Read_Gyro(raw_dataG);
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
     Complementary_filter(filtered_angles, dataG, dataA);
 
-    //min motor 6500;
+    //min motor 6500; ??
     PID();
     Update_PWM();
+    //testmoteurs();
     
     led1 = !led1;    // On bascule l'etat de la LED
-    _T1IF = 0;      // On baisse le FLAG
 }
 
 

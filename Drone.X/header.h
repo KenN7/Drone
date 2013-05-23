@@ -76,6 +76,7 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
 //Protos for motors update and PID
 void PID();
 void Update_PWM();
+void testmoteurs();
 
 //Protos for UART
 void Init_UART();

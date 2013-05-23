@@ -16,14 +16,15 @@
 /******************************************************************************/
 /*                            Definitions                                     */
 /******************************************************************************/
-#define MIN_PWM 6500
-#define MAX_PWM 10000
-#define MES_MIN 5000
-#define MES_MAX 10000
-#define MES_MID 7500
-#define PLAGE_MOTOR 3500
-#define PLAGE_XANGLE 30
-#define PLAGE_YANGLE 30
+#define MIN_PWM 6000
+#define MAX_PWM 8500
+#define MES_MIN 5500
+#define MES_MAX 9500
+#define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))
+//#define MES_MID 7500
+#define PLAGE_MOTOR (MAX_PWM-MIN_PWM)
+#define PLAGE_XANGLE 20
+#define PLAGE_YANGLE 20
 #define PLAGE_ZRATE 90
 
 /******************************************************************************/
@@ -48,28 +49,28 @@ volatile float ERROR[3]; //X, Y , Z
 volatile float DIFFERENTIAL[3];
 volatile float INTEGRAL[2];
 
-float KP = 26.0; //25 27/6/12
-float KI = 200.0; //85 5/6/12
-float KD = 7; //7 27/6/12
+float KP = 70.0; //25 27/6/12
+float KI = 0.0; //85 5/6/12
+float KD = 0.0; //7 27/6/12
 
-float ZKP = 40.0; //40 8/6/12
-float ZKD = 25.0; //25 8/6/12
+float ZKP = 0.0; //40 8/6/12
+float ZKD = 0.0; //25 8/6/12
 
 
 
 void PID()
 {
-    float TZrate;
-    float TXangle;
-    float TYangle;
+    float TZrate = 0;
+    float TXangle = 0;
+    float TYangle = 0;
 
     TZrate = PLAGE_ZRATE*(float)((float)yaw_input - MES_MID)/(MES_MAX - MES_MIN);
     if(TZrate > 1.0 || TZrate < -1.0) {TZrate = 0;}
 
-    TXangle = PLAGE_XANGLE*(float)((float)roll_input - MES_MID)/(MES_MAX - MES_MIN);
+    //TXangle = PLAGE_XANGLE*(float)((float)roll_input - MES_MID)/(MES_MAX - MES_MIN);
     if(TXangle > 1.0 || TXangle < -1.0) {TXangle = 0;}
 
-    TYangle = PLAGE_YANGLE*(float)((float)(pitch_input - MES_MID)/(MES_MAX - MES_MIN));
+    //TYangle = PLAGE_YANGLE*(float)((float)(pitch_input - MES_MID)/(MES_MAX - MES_MIN));
     if(TYangle > 1.0 || TYangle < -1.0) {TYangle = 0;}
     
                                //Pour l'asserv, on convertit les valeurs de
@@ -86,8 +87,8 @@ void PID()
    PREVIOUS_ERROR[1] = ERROR[1];
    PREVIOUS_ERROR[2] = ERROR[2];
 
-    ERROR[0] = TXangle - filtered_angles[0];
-    ERROR[1] = TYangle - filtered_angles[1];
+    ERROR[0] = TXangle - filtered_angles[0]; //roll
+    ERROR[1] = TYangle - filtered_angles[1]; //pitch
     ERROR[2] = TZrate - dataG[2]/dt;
 
 //    DIFFERENTIAL[0] = (ERROR[0] - PREVIOUS_ERROR[0])/dt;
@@ -117,7 +118,7 @@ void PID()
 void Update_PWM()
 {
     float throttle;
-    if(throttle_input <= 5500)
+    if(throttle_input <= 6000)
     {
         throttle = 0;
     }
@@ -134,16 +135,18 @@ void Update_PWM()
 	OC3RS = 5000;
 	OC4RS = 5000;
     }
-    else
+    else //X config
     {
         int OC1_output;
         int OC2_output;
-        int OC3_output;
+        int OC3_output; //x roll, y pitch IPQ
         int OC4_output;
-        OC1_output = 0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;
-	OC2_output = 0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;
-	OC3_output = -0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;
-	OC4_output = -0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;
+
+        OC1_output = 0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; // left back (Psend1)
+	OC2_output = 0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;  //left front (Psend2)
+
+	OC3_output = -0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //right front (Psend3)
+	OC4_output = -0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //right back (Psend4)
 
 	if(OC1_output > MAX_PWM) {OC1_output = MAX_PWM;}
 	if(OC2_output > MAX_PWM) {OC2_output = MAX_PWM;}
@@ -161,5 +164,13 @@ void Update_PWM()
 	OC4RS = OC4_output;
 
     }
+}
+
+void testmoteurs()
+{
+    OC1RS = throttle_input;
+    OC2RS = throttle_input;
+    OC3RS = throttle_input;
+    OC4RS = throttle_input;
 }
 
