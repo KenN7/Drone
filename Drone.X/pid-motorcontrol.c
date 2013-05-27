@@ -18,14 +18,14 @@
 /******************************************************************************/
 #define MIN_PWM 6000
 #define MAX_PWM 7500 //tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
-#define MES_MIN 5500
-#define MES_MAX 9500
-#define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))
-//#define MES_MID 7500
+#define MES_MIN 6000
+#define MES_MAX 9000
+//#define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))
+#define MES_MID 7500
 #define PLAGE_MOTOR (MAX_PWM-MIN_PWM)
 #define PLAGE_XANGLE 20
 #define PLAGE_YANGLE 20
-#define PLAGE_ZRATE 90
+#define PLAGE_ZRATE 50
 
 /******************************************************************************/
 /*                         Global variables                                   */
@@ -49,29 +49,41 @@ volatile float ERROR[3]; //X, Y , Z
 volatile float DIFFERENTIAL[3];
 volatile float INTEGRAL[2];
 
-float KP = 7.0; //25 27/6/12
-float KI = 0.6; //85 5/6/12
-float KD = 1; //7 27/6/12
+//float KP = 4.0; //25 27/6/12
+//float KI = 0.3; //85 5/6/12
+//float KD = 0.8; //7 27/6/12
+//float ZKP = 5.0; //40 8/6/12
+//float ZKD = 0.0; //25 8/6/12
 
-float ZKP = 10.0; //40 8/6/12
-float ZKD = 0.0; //25 8/6/12
+static float KP = 2; //25 27/6/12 //0.2  // BAISSEERRRR
+static float KI = 1; //85 5/6/12  //TESERRR
+static float KD = 1; //7 27/6/12 // TESTERRRR
+
+static float ZKP = 0.5; //40 8/6/12
+static float ZKD = 0; //25 8/6/12
+
+static int Kdir = 1;
 
 
+static volatile float TZrate = 0;
+static volatile float TXangle = 0;
+static volatile float TYangle = 0;
 
 void PID()
 {
-    float TZrate = 0;
-    float TXangle = 0;
-    float TYangle = 0;
+
 
     TZrate = PLAGE_ZRATE*(float)((float)yaw_input - MES_MID)/(MES_MAX - MES_MIN);
-    if(TZrate > PLAGE_ZRATE || TZrate < -PLAGE_ZRATE) {TZrate = 0;}
+    if(TZrate < 1 && TZrate > -1) {TZrate = 0;}
+    TZrate *= Kdir;
 
     TXangle = PLAGE_XANGLE*(float)((float)roll_input - MES_MID)/(MES_MAX - MES_MIN);
-    if(TXangle > PLAGE_XANGLE || TXangle < -PLAGE_XANGLE) {TXangle = 0;}
+    if(TXangle < 1 && TXangle > -1) {TXangle = 0;}
+    TXangle *= Kdir;
 
     TYangle = PLAGE_YANGLE*(float)((float)(pitch_input - MES_MID)/(MES_MAX - MES_MIN));
-    if(TYangle > PLAGE_YANGLE || TYangle < -PLAGE_YANGLE) {TYangle = 0;}
+    if(TYangle < 1 && TYangle > -1) {TYangle = 0;}
+    TYangle *= Kdir;
     
                                //Pour l'asserv, on convertit les valeurs de
                                 //5000 à 10000 de l'entree en angle avec une regle de 3
@@ -89,15 +101,14 @@ void PID()
 
     ERROR[0] = TXangle - filtered_angles[0]; //roll
     ERROR[1] = TYangle - filtered_angles[1]; //pitch
-    ERROR[2] = TZrate - dataG[2]/dt;
+    ERROR[2] = TZrate - dataG[2]; //speed asserv for yaw
 
-//    DIFFERENTIAL[0] = (ERROR[0] - PREVIOUS_ERROR[0])/dt;
-//    DIFFERENTIAL[1] = (ERROR[1] - PREVIOUS_ERROR[1])/dt;
-//    DIFFERENTIAL[2] = (ERROR[2] - PREVIOUS_ERROR[2])/dt;
+    //DIFFERENTIAL[0] = (ERROR[0] - PREVIOUS_ERROR[0])/dt;
+    //DIFFERENTIAL[1] = (ERROR[1] - PREVIOUS_ERROR[1])/dt;
 
-    DIFFERENTIAL[0] = -dataG[0]/dt;
-    DIFFERENTIAL[1] = -dataG[1]/dt;
-    DIFFERENTIAL[2] = -dataG[2]/dt;
+    DIFFERENTIAL[0] = -dataG[0];
+    DIFFERENTIAL[1] = -dataG[1];
+    DIFFERENTIAL[2] = -(ERROR[2] - PREVIOUS_ERROR[2])/dt;
 
     INTEGRAL[0] += ERROR[0]*dt;
     INTEGRAL[1] += ERROR[1]*dt;
@@ -115,9 +126,14 @@ void PID()
     else if (PID_ZOUTPUT < -1000){PID_ZOUTPUT = -1000;}
 }
 
+static volatile float throttle;
+static volatile int OC1_output;
+static volatile int OC2_output;
+static volatile int OC3_output; //x roll, y pitch
+static volatile int OC4_output;
+
 void Update_PWM()
-{
-    float throttle;
+{   
     if(throttle_input <= 5700)
     {
         throttle = 0;
@@ -126,7 +142,8 @@ void Update_PWM()
     {
         throttle = (float)(throttle_input - MES_MIN)/(MES_MAX-MES_MIN);
     }
-    if (throttle > 1.0 || throttle < 0.0) throttle=0;
+    if (throttle > 1.0) throttle=1.0;
+    if(throttle < 0.0) throttle=0.0;
 
     if(throttle==0.0)
     {
@@ -137,11 +154,6 @@ void Update_PWM()
     }
     else //X config
     {
-        int OC1_output;
-        int OC2_output;
-        int OC3_output; //x roll, y pitch IPQ
-        int OC4_output;
-
         OC1_output = 0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; // left back (Psend1)
 	OC2_output = 0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;  //left front (Psend2)
 
@@ -162,6 +174,8 @@ void Update_PWM()
 	OC2RS = OC2_output;
 	OC3RS = OC3_output;
 	OC4RS = OC4_output;
+        //printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
+        //printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
 
     }
 }

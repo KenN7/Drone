@@ -21,9 +21,12 @@
 unsigned char Initialize_Accel(void)
 {
         unsigned char error = 0;
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x0A);
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x08); //(0x0A=full res +-8g) (0x08 = full res +-2G)
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_POWER_CTL,0x08);
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x0A);
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x0A); //moins de bruit a 100Hz IPQ !!! à tester ! (
+
+
+
         return error;
 }
 
@@ -62,7 +65,7 @@ unsigned char Initialize_Gyro(void)
 {
         unsigned char error = 0;
         error += LDByteWriteI2C(i2c_ITG3200,ITG3200_DLPF_FS,0x1b);
-        error += LDByteWriteI2C(i2c_ITG3200,ITG3200_SMPLRT_DIV,0x09);
+        error += LDByteWriteI2C(i2c_ITG3200,ITG3200_SMPLRT_DIV,0x01);
         return error;
 }
 
@@ -93,23 +96,24 @@ void Calibrate_Gyro(volatile int * raw_data)
         GyroOffset[0] += raw_data[1];
         GyroOffset[1] += raw_data[2];
         GyroOffset[2] += raw_data[3];
-        __delay_ms(70);
+        __delay_ms(60);
         led1 = !led2;
         led3 = !led1;
         led2 = !led3;
     }
-    GyroOffset[0] = GyroOffset[0]/50; //approx -55
-    GyroOffset[1] = GyroOffset[1]/50; // approx 49
-    GyroOffset[2] = GyroOffset[2]/50; //approx -52
+
+    GyroOffset[0] = GyroOffset[0]/50 ; //approx -55
+    GyroOffset[1] = GyroOffset[1]/50 ; // approx 49
+    GyroOffset[2] = GyroOffset[2]/50 ; //approx -52
 }
 
 void Process_Gyro(volatile int * raw_data, volatile float * data) //return the calculated gyro angles
-// data[0] = Xangle, data[1] = Yangle, data[2] = Zangle.
+// data[0] = Xangle, data[1] = Yangle, data[2] = Zrate.
 {
     int gyro_xsens = 4; //must tweak those !!
     int gyro_ysens = -4; //14.375 according to datasheet // 14.375
     int gyro_zsens = 4;
     data[0] += (((float)raw_data[1]-GyroOffset[0])/gyro_xsens)*dt; //data[0] represents the roll angle
     data[1] += (((float)raw_data[2]-GyroOffset[1])/gyro_ysens)*dt; //some use the rate into the filter
-    data[2] += (((float)raw_data[3]-GyroOffset[2])/gyro_zsens)*dt;
+    data[2] = (((float)raw_data[3]-GyroOffset[2])/gyro_zsens); //its a rate
 }

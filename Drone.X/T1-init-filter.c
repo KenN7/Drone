@@ -47,7 +47,7 @@ volatile int raw_dataA[3];
 volatile int raw_dataG[4];
 volatile float dataA[2];
 volatile float dataG[3];
-volatile float filtered_angles[2];
+volatile float filtered_angles[2]={0,0};
 volatile float filtered_angles2[2]={0,0};
 
 volatile float filter_xterm[3] = {0,0,0};
@@ -130,7 +130,6 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
 }
 
 
-#define timeConstant 0.1
 void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
 {
     filter_xterm[0] = (data_accel[0] - filtered[0]) * timeConstant * timeConstant;
@@ -155,10 +154,11 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Read_Gyro(raw_dataG);
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
-    Complementary_filter(filtered_angles, dataG, dataA);
-    Snd_filter(filtered_angles2, dataG, dataA);
-    printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
-    
+    //Complementary_filter(filtered_angles, dataG, dataA);
+    Snd_filter(filtered_angles, dataG, dataA);
+    //printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
+    printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
+
     //min motor 6500; ??
     PID();
     Update_PWM();

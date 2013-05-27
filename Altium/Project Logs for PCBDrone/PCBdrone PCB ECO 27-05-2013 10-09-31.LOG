@@ -1,0 +1,18 @@
+Removed Pin From Net: NetName=BAT Pin=Reg-1
+Removed Pin From Net: NetName=GND Pin=Reg-3
+Removed Pin From Net: NetName=GND Pin=Reg-4
+Removed Pin From Net: NetName=GND Pin=Reg-6
+Removed Pin From Net: NetName=GND Pin=Reg-7
+Removed Pin From Net: NetName=5V Pin=Reg-9
+Removed Pin From Net: NetName=5V Pin=Reg-10
+Removed Member From Class: ClassName=DroneRegul Member=Reg
+Added Component: Designator=PTH08000W(PTH08000W)
+Added Pin To Net: NetName=GND Pin=PTH08000W-1
+Added Pin To Net: NetName=BAT Pin=PTH08000W-3
+Added Pin To Net: NetName=5V Pin=PTH08000W-6
+Added Pin To Net: NetName=NetPTH08000W_5 Pin=PTH08000W-5
+Added Pin To Net: NetName=NetPTH08000W_5 Pin=Rset2-2
+Added Net: Name=NetPTH08000W_5
+Added Member To Class: ClassName=DroneRegul Member=Component PTH08000W Reg1
+Added Room: Name=DroneRegul
+Added Room: Name=DroneSch
