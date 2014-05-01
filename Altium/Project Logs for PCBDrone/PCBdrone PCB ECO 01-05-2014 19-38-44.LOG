@@ -1,0 +1,84 @@
+Removed Pin From Net: NetName=NetDR1_1 Pin=INT1-3
+Removed Pin From Net: NetName=NetDR1_1 Pin=INT1-3
+Removed Pin From Net: NetName=AN0 Pin=Pan-1
+Removed Pin From Net: NetName=AN1 Pin=Pan-2
+Removed Pin From Net: NetName=AN6 Pin=Pan-3
+Removed Pin From Net: NetName=AN7 Pin=Pan-4
+Removed Pin From Net: NetName=3V3 Pin=Pan-5
+Removed Pin From Net: NetName=5V Pin=Pan-6
+Removed Pin From Net: NetName=GND Pin=Pan-7
+Removed Pin From Net: NetName=GND Pin=Pbind-1
+Removed Pin From Net: NetName=5V Pin=Pext2-1
+Removed Pin From Net: NetName=GND Pin=Pext2-2
+Removed Pin From Net: NetName=3V3 Pin=Psend1-2
+Removed Pin From Net: NetName=3V3 Pin=Psend2-2
+Removed Pin From Net: NetName=3V3 Pin=Psend3-2
+Removed Pin From Net: NetName=3V3 Pin=Psend4-2
+Removed Pin From Net: NetName=GND Pin=Rset2-1
+Removed Pin From Net: NetName=NetPTH08000W_5 Pin=Rset2-2
+Removed Member From Class: ClassName=DroneRegul Member=INT1
+Removed Member From Class: ClassName=DroneSch Member=Pan
+Removed Member From Class: ClassName=DroneSch Member=Pbind
+Removed Member From Class: ClassName=DroneSch Member=Pext2
+Removed Member From Class: ClassName=DroneRegul Member=Rset2
+Change Component DesignItemId : Designator=Puart Old DesignItemId=Header 2 New DesignItemId=Header 3
+Change Component Footprint: Designator=Puart Old Footprint=HDR1X2 New Footprint=HDR1X3
+Change Component Comment : Designator=Puart Old Comment=Header 2 New Comment=Header 3
+Added Component: Designator=HOLE3(SCREW)
+Added Component: Designator=HOLE4(SCREW)
+Added Component: Designator=PAN0(HDR1X3)
+Added Component: Designator=PAN1(HDR1X3)
+Added Component: Designator=PAN6(HDR1X3)
+Added Component: Designator=PAN7(HDR1X3)
+Added Component: Designator=Pjump0(HDR1X3)
+Added Component: Designator=Pjump1(HDR1X3)
+Added Component: Designator=Pjump6(HDR1X3)
+Added Component: Designator=Pjump7(HDR1X3)
+Added Component: Designator=Rset(C0805R)
+Added Pin To Net: NetName=NetDR1_1 Pin=P1-2
+Added Pin To Net: NetName=AN0 Pin=PAN0-1
+Added Pin To Net: NetName=GND Pin=PAN0-3
+Added Pin To Net: NetName=AN1 Pin=PAN1-1
+Added Pin To Net: NetName=GND Pin=PAN1-3
+Added Pin To Net: NetName=AN6 Pin=PAN6-1
+Added Pin To Net: NetName=GND Pin=PAN6-3
+Added Pin To Net: NetName=AN7 Pin=PAN7-1
+Added Pin To Net: NetName=GND Pin=PAN7-3
+Added Pin To Net: NetName=3V3 Pin=Pjump0-1
+Added Pin To Net: NetName=5V Pin=Pjump0-3
+Added Pin To Net: NetName=3V3 Pin=Pjump1-1
+Added Pin To Net: NetName=5V Pin=Pjump1-3
+Added Pin To Net: NetName=3V3 Pin=Pjump6-1
+Added Pin To Net: NetName=5V Pin=Pjump6-3
+Added Pin To Net: NetName=3V3 Pin=Pjump7-1
+Added Pin To Net: NetName=5V Pin=Pjump7-3
+Added Pin To Net: NetName=GND Pin=Puart-3
+Added Pin To Net: NetName=NetPTH08000W_5 Pin=Rset-1
+Added Pin To Net: NetName=GND Pin=Rset-2
+Change Net Name : Old Net Name=RX New Net Name=TX
+Change Net Name : Old Net Name=TX New Net Name=RX
+Added Pin To Net: NetName=NetPAN0_2 Pin=PAN0-2
+Added Pin To Net: NetName=NetPAN0_2 Pin=Pjump0-2
+Added Net: Name=NetPAN0_2
+Added Pin To Net: NetName=NetPAN1_2 Pin=PAN1-2
+Added Pin To Net: NetName=NetPAN1_2 Pin=Pjump1-2
+Added Net: Name=NetPAN1_2
+Added Pin To Net: NetName=NetPAN6_2 Pin=PAN6-2
+Added Pin To Net: NetName=NetPAN6_2 Pin=Pjump6-2
+Added Net: Name=NetPAN6_2
+Added Pin To Net: NetName=NetPAN7_2 Pin=PAN7-2
+Added Pin To Net: NetName=NetPAN7_2 Pin=Pjump7-2
+Added Net: Name=NetPAN7_2
+Added Member To Class: ClassName=DroneSch Member=Component HOLE3 Hole
+Added Member To Class: ClassName=DroneSch Member=Component HOLE4 Hole
+Added Member To Class: ClassName=DroneSch Member=Component PAN0 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component PAN1 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component PAN6 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component PAN7 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component Pjump0 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component Pjump1 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component Pjump6 Header 3
+Added Member To Class: ClassName=DroneSch Member=Component Pjump7 Header 3
+Added Member To Class: ClassName=DroneRegul Member=Component Rset RES
+Added Room: Name=DroneRegul
+Added Room: Name=DroneSch
