@@ -23,7 +23,7 @@ unsigned char Initialize_Accel(void)
         unsigned char error = 0;
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x08); //(0x0A=full res +-8g) (0x08 = full res +-2G)
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_POWER_CTL,0x08);
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x0A); //moins de bruit a 100Hz IPQ !!! à tester ! (
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x08); //moins de bruit a 100Hz A
 
 
 
@@ -40,19 +40,65 @@ unsigned char Read_Accel(volatile int * raw_data)
         return error;
 }
 
-void Process_Accel(volatile int * raw_data,volatile float * data) //data[0] = X angle, data[1] = Y angle
+    /* This code shows an easy way to smooth readings from a sensor subject to
+ high frequency noise.
+It uses a low pass filter on a circular buffer.
+This circular buffer always contains the last BUFFER_SIZE-1 readings from
+the sensor.
+The new reading is then added to this buffer, from which wecompute the
+mean value by simply dividing the sum of the readings in the buffer by the
+number of readings in the buffer.
+*/
+
+int indexBuffer = 0;
+int BUFFER_SIZE = 7; // Number of samples you want to filter on.
+
+float circularBufferX[7];
+float circularBufferY[7];
+float circularBufferZ[7];
+float sensorDataCircularSum[3];
+float filteredOutput[3];
+extern volatile int raw_dataA[3]; // typically the value you read from your sensor
+
+void smoothSensorReadings(){
+ // We remove the oldest value from the buffer
+ sensorDataCircularSum[0] = sensorDataCircularSum[0] - circularBufferX[indexBuffer];
+ sensorDataCircularSum[1] = sensorDataCircularSum[1] - circularBufferY[indexBuffer];
+ sensorDataCircularSum[2] = sensorDataCircularSum[2] - circularBufferZ[indexBuffer];
+  // The new input from the sensor is placed in the buffer
+ circularBufferX[indexBuffer] = raw_dataA[0];
+ circularBufferY[indexBuffer] = raw_dataA[1];
+ circularBufferZ[indexBuffer] = raw_dataA[2];
+// It is also added to the total sum of the last  BUFFER_SIZE readings
+// This method avoids to sum all the elements every time this function is called.
+ sensorDataCircularSum[0] += raw_dataA[0];
+ sensorDataCircularSum[1] += raw_dataA[1];
+ sensorDataCircularSum[2] += raw_dataA[2];
+// We increment the cursor
+ indexBuffer++;
+
+ if (indexBuffer>=BUFFER_SIZE) indexBuffer=0;// We test if we arrived to the end
+//of the buffer, in which case we start again from index 0
+ filteredOutput[0] =(sensorDataCircularSum[0]/BUFFER_SIZE); // The output is the the mean
+ filteredOutput[1] =(sensorDataCircularSum[1]/BUFFER_SIZE);
+ filteredOutput[2] =(sensorDataCircularSum[2]/BUFFER_SIZE);
+//value of the circular buffer.
+}
+
+
+void Process_Accel(float * raw_data,volatile float * data) //data[0] = X angle, data[1] = Y angle
 {
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
     //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
     
-    data[0] = atan2(raw_data[1],raw_data[2])*57.295; //Those 2 formulas can be found on the internet, dunno which to choose
+    data[0] = atan2(raw_data[1],raw_data[2])*30; //57.295; //Those 2 formulas can be found on the internet, dunno which to choose
 
     //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
     //data[0] is roll
     //data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
     
-    data[1] = atan2(raw_data[0],raw_data[2])*57.295;
+    data[1] = atan2(raw_data[0],raw_data[2])*30; //57.295;
     
     //accelAngleX = atan2(x ,sqrt(ySquared + zSquared));
     //accelAngleY = atan2(y ,sqrt(xSquared + zSquared));
@@ -110,9 +156,9 @@ void Calibrate_Gyro(volatile int * raw_data)
 void Process_Gyro(volatile int * raw_data, volatile float * data) //return the calculated gyro angles
 // data[0] = Xangle, data[1] = Yangle, data[2] = Zrate.
 {
-    int gyro_xsens = 4; //must tweak those !!
-    int gyro_ysens = -4; //14.375 according to datasheet // 14.375
-    int gyro_zsens = 4;
+    int gyro_xsens = 1; //must tweak those !!
+    int gyro_ysens = -1; //14.375 according to datasheet // 14.375
+    int gyro_zsens = 1;
     data[0] += (((float)raw_data[1]-GyroOffset[0])/gyro_xsens)*dt; //data[0] represents the roll angle
     data[1] += (((float)raw_data[2]-GyroOffset[1])/gyro_ysens)*dt; //some use the rate into the filter
     data[2] = (((float)raw_data[3]-GyroOffset[2])/gyro_zsens); //its a rate

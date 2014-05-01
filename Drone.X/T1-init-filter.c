@@ -129,6 +129,7 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
     //il faut faire confiance au gyro et corriger avec l'accel !!!
 }
 
+int Ck = 5;
 
 void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
 {
@@ -136,8 +137,8 @@ void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile 
     filter_yterm[0] = (data_accel[1] - filtered[1]) * timeConstant * timeConstant;
     filter_xterm[2] += (dt * filter_xterm[0]);
     filter_yterm[2] += (dt * filter_yterm[0]);
-    filter_xterm[1] = filter_xterm[2] + (data_accel[0] - filtered[0]) * 2 * timeConstant + data_gyro[0];
-    filter_yterm[1] = filter_yterm[2] + (data_accel[1] - filtered[1]) * 2 * timeConstant + data_gyro[1];
+    filter_xterm[1] = filter_xterm[2] + (data_accel[0] - filtered[0]) * 2 * timeConstant + data_gyro[0] * Ck;
+    filter_yterm[1] = filter_yterm[2] + (data_accel[1] - filtered[1]) * 2 * timeConstant + data_gyro[1] * Ck;
 
     filtered[0] += (dt * filter_xterm[1]);
     filtered[1] += (dt * filter_yterm[1]);
@@ -146,13 +147,15 @@ void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile 
 /* Interrupt Routines                                                         */
 /******************************************************************************/
 /* Add interrupt routine code here. */
+extern float filteredOutput[3];
 
 void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
     _T1IF = 0;      // On baisse le FLAG
     Read_Accel(raw_dataA);
+    smoothSensorReadings();
     Read_Gyro(raw_dataG);
-    Process_Accel(raw_dataA, dataA);
+    Process_Accel(filteredOutput, dataA);
     Process_Gyro(raw_dataG, dataG);
     //Complementary_filter(filtered_angles, dataG, dataA);
     Snd_filter(filtered_angles, dataG, dataA);

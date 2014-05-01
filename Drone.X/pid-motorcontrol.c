@@ -55,11 +55,11 @@ volatile float INTEGRAL[2];
 //float ZKP = 5.0; //40 8/6/12
 //float ZKD = 0.0; //25 8/6/12
 
-static float KP = 2; //25 27/6/12 //0.2  // BAISSEERRRR
-static float KI = 1; //85 5/6/12  //TESERRR
+static float KP = 4; //25 27/6/12 //0.2  // BAISSEERRRR
+static float KI = 0.5; //85 5/6/12  //TESERRR
 static float KD = 1; //7 27/6/12 // TESTERRRR
 
-static float ZKP = 0.5; //40 8/6/12
+static float ZKP = 2; //40 8/6/12
 static float ZKD = 0; //25 8/6/12
 
 static int Kdir = 1;
