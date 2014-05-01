@@ -71,7 +71,13 @@ void InitApp(void)
     _NSTDIS = 0;
     
     AD1PCFGL = 0x1FF; //desactivation of analog pins
-    
+
+        //LED WARNING :
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500);
+
     InitI2C();
     __delay_ms(500);
     Initialize_Accel(); //I2C init
@@ -88,11 +94,7 @@ void InitApp(void)
     printf("UART OK");
 
     Initialize_T1(); //Timer 1 for control loop
-    //LED WARNING :
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500); 
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500); led1 = 0; led2 = 0; led3 = 0; __delay_ms(500);
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(1000);
+
 
     Start_OC();
     //OC1RS = 5000;OC2RS = 5000;OC3RS = 5000;OC4RS = 5000;
@@ -129,7 +131,7 @@ void Complementary_filter(volatile float * filtered, volatile float * data_gyro,
     //il faut faire confiance au gyro et corriger avec l'accel !!!
 }
 
-int Ck = 5;
+int Ck = 1;
 
 void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel)
 {
@@ -153,9 +155,9 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
     _T1IF = 0;      // On baisse le FLAG
     Read_Accel(raw_dataA);
-    smoothSensorReadings();
+    //smoothSensorReadings();
     Read_Gyro(raw_dataG);
-    Process_Accel(filteredOutput, dataA);
+    Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
     //Complementary_filter(filtered_angles, dataG, dataA);
     Snd_filter(filtered_angles, dataG, dataA);

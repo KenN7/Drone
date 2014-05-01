@@ -16,8 +16,8 @@
 /******************************************************************************/
 /*                            Definitions                                     */
 /******************************************************************************/
-#define MIN_PWM 6000
-#define MAX_PWM 7500 //tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
+#define MIN_PWM 5500
+#define MAX_PWM 9000 //tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
 #define MES_MIN 6000
 #define MES_MAX 9000
 //#define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))

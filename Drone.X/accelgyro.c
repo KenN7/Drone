@@ -21,9 +21,9 @@
 unsigned char Initialize_Accel(void)
 {
         unsigned char error = 0;
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x0B); //(0x0B=full res +-16g) 0x3=not fullres 16g
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x03); //(0x0B=full res +-16g) 0x03=not fullres 16g
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_POWER_CTL,0x08);
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x11); //200Hz bw 100Hz
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x08); //200Hz bw 100Hz
 
 
 
@@ -51,11 +51,11 @@ number of readings in the buffer.
 */
 
 int indexBuffer = 0;
-int BUFFER_SIZE = 7; // Number of samples you want to filter on.
+int BUFFER_SIZE = 5; // Number of samples you want to filter on.
 
-float circularBufferX[7];
-float circularBufferY[7];
-float circularBufferZ[7];
+float circularBufferX[5];
+float circularBufferY[5];
+float circularBufferZ[5];
 float sensorDataCircularSum[3];
 float filteredOutput[3];
 extern volatile int raw_dataA[3]; // typically the value you read from your sensor
@@ -86,7 +86,7 @@ void smoothSensorReadings(){
 }
 
 
-void Process_Accel(float * raw_data,volatile float * data) //data[0] = X angle, data[1] = Y angle
+void Process_Accel(volatile int * raw_data,volatile float * data) //data[0] = X angle, data[1] = Y angle
 {
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
@@ -142,7 +142,7 @@ void Calibrate_Gyro(volatile int * raw_data)
         GyroOffset[0] += raw_data[1];
         GyroOffset[1] += raw_data[2];
         GyroOffset[2] += raw_data[3];
-        __delay_ms(60);
+        __delay_ms(100);
         led1 = !led2;
         led3 = !led1;
         led2 = !led3;

@@ -34,7 +34,7 @@
 #define T1              400 //Timer 1 frequency
 #define dt              0.0025 //Timer 1 duration
 #define c_filter        0.95 //coef of the complementary filter (must be <1)
-#define timeConstant    4// constant for second order complementary
+#define timeConstant    3// constant for second order complementary
 
 #define UnlockRP        __builtin_write_OSCCONL(OSCCON & 0xBF)
 #define LockRP          __builtin_write_OSCCONL(OSCCON | 0x40)
@@ -51,7 +51,7 @@ void InitApp(void);             /* I/O and global Initialization         */
 // Protos for accelerometer and gyroscope
 unsigned char Initialize_Accel(void);
 unsigned char Read_Accel(volatile int *data);
-void Process_Accel(float * raw_data, volatile float * data);
+void Process_Accel(volatile int * raw_data, volatile float * data);
 
 unsigned char Initialize_Gyro(void);
 void Calibrate_Gyro(volatile int * raw_data);

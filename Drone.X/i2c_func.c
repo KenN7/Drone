@@ -298,7 +298,8 @@ unsigned int LDByteWriteI2C(unsigned char ControlByte, unsigned char LowAdd, uns
 	//EEAckPolling(ControlByte);		//Perform ACK polling
 	if(ErrorCode1 == 0) { printf("ACK 1 not recieved"); }
 	if(ErrorCode2 == 0) { printf("ACK 2 not recieved"); }
-	//return(ErrorCode);
+        int ErrorCode = ErrorCode1 + ErrorCode2;
+	return(ErrorCode);
 }
 
 
