@@ -21,9 +21,9 @@
 unsigned char Initialize_Accel(void)
 {
         unsigned char error = 0;
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x08); //(0x0A=full res +-8g) (0x08 = full res +-2G)
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x0B); //(0x0B=full res +-16g) 0x3=not fullres 16g
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_POWER_CTL,0x08);
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x08); //moins de bruit a 100Hz A
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x11); //200Hz bw 100Hz
 
 
 
@@ -92,13 +92,13 @@ void Process_Accel(float * raw_data,volatile float * data) //data[0] = X angle, 
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
     //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
     
-    data[0] = atan2(raw_data[1],raw_data[2])*30; //57.295; //Those 2 formulas can be found on the internet, dunno which to choose
+    data[0] = atan2(raw_data[1],raw_data[2])*57.295; //57.295; //Those 2 formulas can be found on the internet, dunno which to choose
 
     //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
     //data[0] is roll
     //data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
     
-    data[1] = atan2(raw_data[0],raw_data[2])*30; //57.295;
+    data[1] = atan2(raw_data[0],raw_data[2])*57.295; //57.295;
     
     //accelAngleX = atan2(x ,sqrt(ySquared + zSquared));
     //accelAngleY = atan2(y ,sqrt(xSquared + zSquared));

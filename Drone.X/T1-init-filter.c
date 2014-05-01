@@ -70,7 +70,7 @@ void InitApp(void)
     // activation de la priorite des interruptions
     _NSTDIS = 0;
     
-    AD1PCFGL = 0x1FF; //desactivation of analogue pins
+    AD1PCFGL = 0x1FF; //desactivation of analog pins
     
     InitI2C();
     __delay_ms(500);
