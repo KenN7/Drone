@@ -1,0 +1,13 @@
+Added Component: Designator=DR1(DO-41)
+Added Component: Designator=DR2(DO-41)
+Added Component: Designator=Reg3(TO-220-AB)
+Added Pin To Net: NetName=NetDR1_1 Pin=DR1-1
+Added Pin To Net: NetName=NetDR1_2 Pin=DR1-2
+Added Pin To Net: NetName=NetDR1_1 Pin=DR2-1
+Added Pin To Net: NetName=NetDR1_2 Pin=DR2-2
+Added Pin To Net: NetName=5V Pin=Reg3-1
+Added Pin To Net: NetName=GND Pin=Reg3-2
+Added Pin To Net: NetName=3V3 Pin=Reg3-3
+Added Member To Class: ClassName=DroneRegul Member=Component DR1 Diode 1N4001
+Added Member To Class: ClassName=DroneRegul Member=Component DR2 Diode 1N4001
+Added Member To Class: ClassName=DroneRegul Member=Component Reg3 LM2937IMP-3.3
