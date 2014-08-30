@@ -18,14 +18,26 @@
 
 //------------------------- initAccel() -------------------
 // Initialize accelerometer
+void test_accel(void){
+    unsigned char testvar = 0x00;
+    LDByteReadI2C(i2c_ADXL345,ADXL345_DEVID,&testvar, 1);
+    if (testvar == 0xE5)
+    {
+        printf("tested ok");
+    }
+    else 
+    {
+        printf("error response : %b",testvar);
+    }
+}
+
+
 unsigned char Initialize_Accel(void)
 {
         unsigned char error = 0;
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x03); //(0x0B=full res +-16g) 0x03=not fullres 16g
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_DATA_FORMAT,0x01); //(0x0B=full res +-16g) 0x03=not fullres 16g 0x01 = not fullres 4g
         error += LDByteWriteI2C(i2c_ADXL345,ADXL345_POWER_CTL,0x08);
-        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x08); //200Hz bw 100Hz
-
-
+        error += LDByteWriteI2C(i2c_ADXL345,ADXL345_BW_RATE,0x0C); //400Hz bw 200Hz
 
         return error;
 }
@@ -91,14 +103,22 @@ void Process_Accel(volatile int * raw_data,volatile float * data) //data[0] = X 
     //http://www.analog.com/static/imported-files/application_notes/AN-1057.pdf
     //http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
     //raw_data[X,Y,Z] accel, currently in radians, multiply by 57.295 to get degrees
+    //frst we need to get the actual accel in m/s*s
+     //With 10 bits measuring over a +/-4g range we can find how to convert by using the equation:
+     // Gs = Measurement Value * (G-range/(2^10)) or Gs = Measurement Value * (8/1024)
+     //xg = x * 0.0078;
+    //g=9,806
+    raw_data[0] *= 0.0078*9.806;
+    raw_data[1] *= 0.0078*9.806;
+    raw_data[2] *= 0.0078*9.806;
     
-    data[0] = atan2(raw_data[1],raw_data[2])*57.295; //57.295; //Those 2 formulas can be found on the internet, dunno which to choose
+    data[0] = atan2(-raw_data[1],raw_data[2])*57.295; //57.295; //Those 2 formulas can be found on the internet, dunno which to choose
 
     //data[0] = atan2(raw_data[1],sqrt(raw_data[0]*raw_data[0]+raw_data[2]*raw_data[2]));
     //data[0] is roll
-    //data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]));
+    data[1] = atan2(raw_data[0],sqrt(raw_data[1]*raw_data[1]+raw_data[2]*raw_data[2]))*57.295;
     
-    data[1] = atan2(raw_data[0],raw_data[2])*57.295; //57.295;
+    //data[1] = atan2(raw_data[0],raw_data[2])*57.295; //57.295;
     
     //accelAngleX = atan2(x ,sqrt(ySquared + zSquared));
     //accelAngleY = atan2(y ,sqrt(xSquared + zSquared));
@@ -136,30 +156,30 @@ static float GyroOffset[3];
 void Calibrate_Gyro(volatile int * raw_data)
 {
     int i;
-    for (i=0;i<50;i++)
+    for (i=0;i<100;i++)
     {
         Read_Gyro(raw_data);
         GyroOffset[0] += raw_data[1];
         GyroOffset[1] += raw_data[2];
         GyroOffset[2] += raw_data[3];
-        __delay_ms(100);
-        led1 = !led2;
-        led3 = !led1;
-        led2 = !led3;
+        __delay_ms(50);
+//        led1 = !led2;
+//        led3 = !led1;
+//        led2 = !led3;
     }
 
-    GyroOffset[0] = GyroOffset[0]/50 ; //approx -55
-    GyroOffset[1] = GyroOffset[1]/50 ; // approx 49
-    GyroOffset[2] = GyroOffset[2]/50 ; //approx -52
+    GyroOffset[0] = GyroOffset[0]/100 ; //approx -55
+    GyroOffset[1] = GyroOffset[1]/100 ; // approx 49
+    GyroOffset[2] = GyroOffset[2]/100 ; //approx -52
 }
 
 void Process_Gyro(volatile int * raw_data, volatile float * data) //return the calculated gyro angles
 // data[0] = Xangle, data[1] = Yangle, data[2] = Zrate.
 {
-    int gyro_xsens = 1; //must tweak those !!
-    int gyro_ysens = -1; //14.375 according to datasheet // 14.375
-    int gyro_zsens = 1;
-    data[0] += (((float)raw_data[1]-GyroOffset[0])/gyro_xsens)*dt; //data[0] represents the roll angle
-    data[1] += (((float)raw_data[2]-GyroOffset[1])/gyro_ysens)*dt; //some use the rate into the filter
-    data[2] = (((float)raw_data[3]-GyroOffset[2])/gyro_zsens); //its a rate
+    int gyro_xsens = -14.375; //must tweak those !!
+    int gyro_ysens = -14.375; //14.375 according to datasheet // 14.375
+    int gyro_zsens = 14.375;
+    data[0] += ((raw_data[1]-GyroOffset[0])*dt)/gyro_xsens; //data[0] represents the roll angle
+    data[1] += ((raw_data[2]-GyroOffset[1])*dt)/gyro_ysens; //some use the rate into the filter
+    data[2] = (raw_data[3]-GyroOffset[2])/gyro_zsens; //its a rate
 }

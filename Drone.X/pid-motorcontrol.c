@@ -17,7 +17,7 @@
 /*                            Definitions                                     */
 /******************************************************************************/
 #define MIN_PWM 5500
-#define MAX_PWM 9000 //tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
+#define MAX_PWM 9000 // TODO tweakage necessaire !! les controlleurs se mettent en BO pour des raisons inconnues
 #define MES_MIN 6000
 #define MES_MAX 9000
 //#define MES_MID (MES_MIN+((MES_MAX-MES_MIN)/2))
@@ -55,9 +55,10 @@ volatile float INTEGRAL[2];
 //float ZKP = 5.0; //40 8/6/12
 //float ZKD = 0.0; //25 8/6/12
 
-static float KP = 4; //25 27/6/12 //0.2  // BAISSEERRRR
-static float KI = 0.5; //85 5/6/12  //TESERRR
-static float KD = 1; //7 27/6/12 // TESTERRRR
+//TODO teweaker les coefs
+static float KP = 20; //25 27/6/12 //0.2  // BAISSEERRRR
+static float KI = 10; //85 5/6/12  //TESERRR
+static float KD = 5; //7 27/6/12 // TESTERRRR
 
 static float ZKP = 2; //40 8/6/12
 static float ZKD = 0; //25 8/6/12
@@ -91,7 +92,7 @@ void PID()
                                 // l'angle max choisi est 30deg, donc de -15 a +15
                                 // je pense quon peut aller bien au dessus.
                                 // il est peut etre habile de deporter les calculs
-                                // dans le mm ficier qe le PID pour limiter les
+                                // dans le mm fichier que le PID pour limiter les
                                 // variables globales gitanes entres fichiers.
 
 
@@ -99,24 +100,34 @@ void PID()
    PREVIOUS_ERROR[1] = ERROR[1];
    PREVIOUS_ERROR[2] = ERROR[2];
 
+/// avant bullshit MP6050
     ERROR[0] = TXangle - filtered_angles[0]; //roll
     ERROR[1] = TYangle - filtered_angles[1]; //pitch
     ERROR[2] = TZrate - dataG[2]; //speed asserv for yaw
+// TODO refactorer et remettre ci dessus et enlever bullshit ci dessous
+    //ERROR[0] = TXangle - COMPLEMENTARY_XANGLE; //roll
+    //ERROR[1] = TYangle - COMPLEMENTARY_YANGLE; //pitch
+    //ERROR[2] = TZrate - GYRO_ZRATE; //speed asserv for yaw
 
     //DIFFERENTIAL[0] = (ERROR[0] - PREVIOUS_ERROR[0])/dt;
     //DIFFERENTIAL[1] = (ERROR[1] - PREVIOUS_ERROR[1])/dt;
 
+    // de même ici
     DIFFERENTIAL[0] = -dataG[0];
     DIFFERENTIAL[1] = -dataG[1];
     DIFFERENTIAL[2] = -(ERROR[2] - PREVIOUS_ERROR[2])/dt;
+    //TODO de même virer code ci dessous et remettre ci dessus
+    //DIFFERENTIAL[0] = -GYRO_XRATE;
+    //DIFFERENTIAL[1] = -GYRO_YRATE;
+    //DIFFERENTIAL[2] = -GYRO_ZRATE;
 
     INTEGRAL[0] += ERROR[0]*dt;
     INTEGRAL[1] += ERROR[1]*dt;
 
-//    if(XINTEGRAL > 0.5) {XINTEGRAL = 0.5;}
-//    else if(XINTEGRAL < -0.5) {XINTEGRAL = -0.5;}
-//    if(YINTEGRAL > 0.5) {YINTEGRAL = 0.5;}
-//    else if(YINTEGRAL < -0.5) {YINTEGRAL = -0.5;}
+    if(INTEGRAL[0]> 0.5) {INTEGRAL[0] = 0.5;}
+    else if(INTEGRAL[0] < -0.5) {INTEGRAL[0] = -0.5;}
+    if(INTEGRAL[1] > 0.5) {INTEGRAL[1] = 0.5;}
+    else if(INTEGRAL[1] < -0.5) {INTEGRAL[1] = -0.5;}
 
     PID_XOUTPUT = ERROR[0]*KP + DIFFERENTIAL[0]*KD + INTEGRAL[0]*KI;
     PID_YOUTPUT = ERROR[1]*KP + DIFFERENTIAL[1]*KD + INTEGRAL[1]*KI;

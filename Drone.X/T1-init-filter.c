@@ -60,9 +60,18 @@ volatile float filter_yterm[3] = {0,0,0};
 void InitApp(void)
 {
     //pin des LEDs en sortie
-    _TRISA2 = 0;
-    _TRISA3 = 0;
-    _TRISA4 = 0;
+    //_TRISA2 = 0;
+    //_TRISA3 = 0;
+    //_TRISA4 = 0;
+    _TRISA2 = 1;
+    _TRISA3 = 1;
+    _TRISA4 = 1;
+    _TRISC3 = 1;
+    _TRISC4 = 1;
+    _TRISC5 = 1;
+    _TRISB4 = 1;
+    _TRISA8 = 1;
+    _TRISA9 = 1;
     //Si on a un interrupteur sur la pin RB5 (par exemple), on la met en entree
     //_TRISB5 = 1;
     //Et on active la pullup qui va bien (registres CNPU1 et CNPU2)
@@ -70,19 +79,34 @@ void InitApp(void)
     // activation de la priorite des interruptions
     _NSTDIS = 0;
     
-    AD1PCFGL = 0x1FF; //desactivation of analog pins
+    AD1PCFGL = 0xFFFF; //desactivation of analog pins
 
         //LED WARNING :
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
-    led1 = 1; led2 = 1; led3 = 1; __delay_ms(500);
-
+//    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+//    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+//    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
+//    led1 = 1; led2 = 1; led3 = 1; 
+    Init_UART(); //Init UART for debug
+    printf("UART oK");
+    __delay_ms(250);
     InitI2C();
     __delay_ms(500);
+    test_accel();
     Initialize_Accel(); //I2C init
     Initialize_Gyro();
     Calibrate_Gyro(raw_dataG);
+    //int error = 1;
+    //do
+    //{
+        //Setup_MPU6050();
+        //MPU6050_Test_I2C();
+        //error = MPU6050_Check_Registers();
+    //}
+    //while(error==1);
+    
+    __delay_ms(300);
+    //Calibrate_Gyros();
+    // end calib mp6050
 
     Initialize_T2(); //Timer 2 for Input Capture
     Initialize_IC();
@@ -90,16 +114,13 @@ void InitApp(void)
     Initialize_T3(); //Timer 3 for Output compare
     Initialize_OC();
 
-    Init_UART(); //Init UART for debug
-    printf("UART OK");
-
     Initialize_T1(); //Timer 1 for control loop
 
 
     Start_OC();
     //OC1RS = 5000;OC2RS = 5000;OC3RS = 5000;OC4RS = 5000;
 
-    //__delay_ms(3000);
+    __delay_ms(1000);
 
     ReStart_T1();
 }
@@ -145,6 +166,19 @@ void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile 
     filtered[0] += (dt * filter_xterm[1]);
     filtered[1] += (dt * filter_yterm[1]);
 }
+
+void second_order_complementary_filter() //http://code.google.com/p/aeroquad/source/browse/trunk/AeroQuad/Filter.pde?r=143
+{
+    filter_xterm[0] = (ACCEL_XANGLE - COMPLEMENTARY_XANGLE) * timeConstant * timeConstant;
+    filter_yterm[0] = (ACCEL_YANGLE - COMPLEMENTARY_YANGLE) * timeConstant * timeConstant;
+    filter_xterm[2] = (dt * filter_xterm[0]) + filter_xterm[2];
+    filter_yterm[2] = (dt * filter_yterm[0]) + filter_yterm[2];
+    filter_xterm[1] = filter_xterm[2] + (ACCEL_XANGLE - COMPLEMENTARY_XANGLE) * 2 * timeConstant + GYRO_XRATE;
+    filter_yterm[1] = filter_yterm[2] + (ACCEL_YANGLE - COMPLEMENTARY_YANGLE) * 2 * timeConstant + GYRO_YRATE;
+    COMPLEMENTARY_XANGLE = (dt * filter_xterm[1]) + COMPLEMENTARY_XANGLE;
+    COMPLEMENTARY_YANGLE = (dt * filter_yterm[1]) + COMPLEMENTARY_YANGLE;
+}
+
 /******************************************************************************/
 /* Interrupt Routines                                                         */
 /******************************************************************************/
@@ -159,17 +193,27 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Read_Gyro(raw_dataG);
     Process_Accel(raw_dataA, dataA);
     Process_Gyro(raw_dataG, dataG);
+    //Get_Gyro_Rates();
+    //Get_Accel_Values();
+    //Get_Accel_Angles();
     //Complementary_filter(filtered_angles, dataG, dataA);
     Snd_filter(filtered_angles, dataG, dataA);
+    //second_order_complementary_filter();
+    
     //printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
-    printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
-
+    static int y=0;
+    if (y%100 == 1) {
+        //printf("%g,%g,%g\n",(double)filtered_angles[1],(double)dataG[1],(double)dataA[1]);
+        printf("%g,%g\n", (double)dataG[2], (double)dataA[2]);
+    }
+    y+=1;
+    //printf("%f,%f,%f\n",COMPLEMENTARY_XANGLE,GYRO_XRATE,ACCEL_XANGLE);
     //min motor 6500; ??
     PID();
     Update_PWM();
     //testmoteurs();
     
-    led1 = !led1;    // On bascule l'etat de la LED
+//    led1 = !led1;    // On bascule l'etat de la LED
 }
 
 

@@ -55,6 +55,6 @@ int16_t main(void)
     {
        // OC1R = 700;
         //  __delay_ms(100);
-    }
+     }
 }
 

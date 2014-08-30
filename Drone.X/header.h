@@ -16,8 +16,6 @@
 /* System Level #define Macros                                                */
 /******************************************************************************/
 
-/* TODO Define system operating frequency */
-
 /* Microcontroller MIPs (FCY) */
 #define SYS_FREQ        80000000 //7370000L
 #define FCY             SYS_FREQ/2
@@ -26,29 +24,74 @@
 /* User Level #define Macros                                                  */
 /******************************************************************************/
 
-/* TODO Application specific user parameters used in user.c may go here */
-
-#define led1            _LATA2
-#define led2            _LATA3
-#define led3            _LATA4
+//#define led1            _LATA2
+//#define led2            _LATA3
+//#define led3            _LATA4
 #define T1              400 //Timer 1 frequency
 #define dt              0.0025 //Timer 1 duration
 #define c_filter        0.95 //coef of the complementary filter (must be <1)
-#define timeConstant    3// constant for second order complementary
+#define timeConstant    1.1// constant for second order complementary
 
 #define UnlockRP        __builtin_write_OSCCONL(OSCCON & 0xBF)
 #define LockRP          __builtin_write_OSCCONL(OSCCON | 0x40)
+
+
+///// TODO Bullshit a refactorer :
+extern signed int ACCEL_XOUT;
+extern signed int ACCEL_YOUT;
+extern signed int ACCEL_ZOUT;
+extern float GYRO_XRATE;
+extern float GYRO_YRATE;
+extern float GYRO_ZRATE;
+extern int GYRO_XRATERAW;
+extern int GYRO_YRATERAW;
+extern int GYRO_ZRATERAW;
+extern unsigned char GYRO_XOUT_L;
+extern unsigned char GYRO_XOUT_H;
+extern unsigned char GYRO_YOUT_L;
+extern unsigned char GYRO_YOUT_H;
+extern unsigned char GYRO_ZOUT_L;
+extern unsigned char GYRO_ZOUT_H;
+extern signed int GYRO_XOUT;
+extern signed int GYRO_YOUT;
+extern signed int GYRO_ZOUT;
+extern unsigned char ACCEL_XOUT_L;
+extern unsigned char ACCEL_XOUT_H;
+extern unsigned char ACCEL_YOUT_L;
+extern unsigned char ACCEL_YOUT_H;
+extern unsigned char ACCEL_ZOUT_L;
+extern unsigned char ACCEL_ZOUT_H;
+extern signed long GYRO_XOUT_OFFSET_1000SUM;
+extern signed long GYRO_YOUT_OFFSET_1000SUM;
+extern signed long GYRO_ZOUT_OFFSET_1000SUM;
+extern float GYRO_XANGLE;
+extern float GYRO_YANGLE;
+extern float GYRO_ZANGLE;
+extern long GYRO_XANGLERAW;
+extern long GYRO_YANGLERAW;
+extern long GYRO_ZANGLERAW;
+extern float ACCEL_XANGLE;
+extern float ACCEL_YANGLE;
+extern float ACCEL_ZANGLE;
+extern signed int GYRO_XOUT_OFFSET;
+extern signed int GYRO_YOUT_OFFSET;
+extern signed int GYRO_ZOUT_OFFSET;
+extern float COMPLEMENTARY_XANGLE;
+extern float COMPLEMENTARY_XANGLEPREV;
+extern float COMPLEMENTARY_YANGLE;
+extern float COMPLEMENTARY_YANGLEPREV;
+// END BULLSHIT
+
 
 /******************************************************************************/
 /* Function Prototypes                                                        */
 /******************************************************************************/
 
-/* TODO User level functions prototypes (i.e. InitApp) go here */
-
 void ConfigureOscillator(void);    /* Handles clock switching/osc initialization */
 void InitApp(void);             /* I/O and global Initialization         */
 
 // Protos for accelerometer and gyroscope
+void test_accel(void);
 unsigned char Initialize_Accel(void);
 unsigned char Read_Accel(volatile int *data);
 void Process_Accel(volatile int * raw_data, volatile float * data);
@@ -58,6 +101,16 @@ void Calibrate_Gyro(volatile int * raw_data);
 unsigned char Read_Gyro(volatile int *data);
 void Process_Gyro(volatile int * raw_data, volatile float * data);
 void smoothSensorReadings();
+
+
+//TODO protos pour bullshit MP605
+void Setup_MPU6050(void);
+void MPU6050_Test_I2C(void);
+int MPU6050_Check_Registers(void);
+void Calibrate_Gyros(void);
+void Get_Accel_Values(void);
+void Get_Accel_Angles(void);
+void Get_Gyro_Rates(void);
 
 //Protos for T2 and InputCapture
 void Initialize_T2();
@@ -75,6 +128,9 @@ void Initialize_T1();
 void ReStart_T1();
 void Complementary_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel);
 void Snd_filter(volatile float * filtered, volatile float * data_gyro, volatile float * data_accel);
+
+//TODO BULLSHIT
+void second_order_complementary_filter(void);
 
 //Protos for motors update and PID
 void PID();
