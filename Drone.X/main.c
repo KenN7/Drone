@@ -17,6 +17,7 @@
 #include <stdbool.h>       /* Includes true/false definition                  */
 #include "header.h"        /* Function / Parameters                           */
 #include <libpic30.h>
+#include <timer.h>
 
 /******************************************************************************/
 /* Global Variable Declaration                                                */
@@ -46,15 +47,22 @@ _FICD(ICS_PGD1 & JTAGEN_OFF);
 /******************************************************************************/
 
 int16_t main(void)
-{
+{   
     // Initialize IO ports and peripherals.
     ConfigureOscillator();
     InitApp();
 
-    while (1)
-    {
-       // OC1R = 700;
-        //  __delay_ms(100);
-     }
+    eteindre();
+    __delay_ms(500);
+    
+    while(1){
+        //eteindre();
+        stack_point();
+    }
+
+
 }
+////////////////////////////////////////////////////////////////////////////////
+
+
 

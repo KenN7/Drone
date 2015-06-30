@@ -60,9 +60,9 @@ volatile float filter_yterm[3] = {0,0,0};
 void InitApp(void)
 {
     //pin des LEDs en sortie
-    //_TRISA2 = 0;
-    //_TRISA3 = 0;
-    //_TRISA4 = 0;
+    _TRISA2 = 0;
+    _TRISA3 = 0;
+    _TRISA4 = 0;
     _TRISA2 = 1;
     _TRISA3 = 1;
     _TRISA4 = 1;
@@ -72,12 +72,15 @@ void InitApp(void)
     _TRISB4 = 1;
     _TRISA8 = 1;
     _TRISA9 = 1;
+    _TRISC7 = 0;
     //Si on a un interrupteur sur la pin RB5 (par exemple), on la met en entree
     //_TRISB5 = 1;
     //Et on active la pullup qui va bien (registres CNPU1 et CNPU2)
     //_CN27PUE = 1;
     // activation de la priorite des interruptions
     _NSTDIS = 0;
+    _DMA4IP = 7;
+    _DMA4IE = 1;
     
     AD1PCFGL = 0xFFFF; //desactivation of analog pins
 
@@ -214,6 +217,24 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     //testmoteurs();
     
 //    led1 = !led1;    // On bascule l'etat de la LED
+}
+
+ int saveIEC0;
+ int saveIEC1;
+ int saveIEC2;
+ int saveIEC3;
+ int saveIEC4;
+
+void noInterrupts(void){
+    _IPL0=1;
+    _IPL1=1;
+    _IPL2=1;
+}
+
+void reInterrupts(void){
+    _IPL0=0;
+    _IPL1=0;
+    _IPL2=0;
 }
 
 

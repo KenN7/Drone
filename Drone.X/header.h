@@ -80,6 +80,18 @@ extern float COMPLEMENTARY_XANGLE;
 extern float COMPLEMENTARY_XANGLEPREV;
 extern float COMPLEMENTARY_YANGLE;
 extern float COMPLEMENTARY_YANGLEPREV;
+
+extern int numled; //le numéro de la led sur le cercle de 0 à 15
+extern unsigned short int g; // l'intensité de vert
+extern unsigned short int r; // l'intensité de rouge
+extern unsigned short int b; // l'intensité de bleu
+extern unsigned short int pixel[120];
+
+extern int saveIEC0;
+extern int saveIEC1;
+extern int saveIEC2;
+extern int saveIEC3;
+extern int saveIEC4;
 // END BULLSHIT
 
 
@@ -143,3 +155,15 @@ void GetData();
 void PutCharUART1(unsigned char b);
 void PutLong(long i);
 void ProcessRxData();
+
+void Set_Pixels(int, unsigned short int, unsigned short int, unsigned short int);
+void Set_led(void);
+void noInterrupts(void);
+void reInterrupts(void);
+void flash(void);
+void eteindre(void);
+void SOS(void);
+void turning_point(void);
+void degrade(void);
+void ironmanheart(void);
+void stack_point(void);

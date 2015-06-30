@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c inputcapt.c outputcompare.c accelgyro.c i2c_func.c T1-init-filter.c pid-motorcontrol.c uart.c mp6050.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c inputcapt.c outputcompare.c accelgyro.c i2c_func.c T1-init-filter.c pid-motorcontrol.c uart.c mp6050.c LED-circle.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/mp6050.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/inputcapt.o.d ${OBJECTDIR}/outputcompare.o.d ${OBJECTDIR}/accelgyro.o.d ${OBJECTDIR}/i2c_func.o.d ${OBJECTDIR}/T1-init-filter.o.d ${OBJECTDIR}/pid-motorcontrol.o.d ${OBJECTDIR}/uart.o.d ${OBJECTDIR}/mp6050.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/mp6050.o ${OBJECTDIR}/LED-circle.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/inputcapt.o.d ${OBJECTDIR}/outputcompare.o.d ${OBJECTDIR}/accelgyro.o.d ${OBJECTDIR}/i2c_func.o.d ${OBJECTDIR}/T1-init-filter.o.d ${OBJECTDIR}/pid-motorcontrol.o.d ${OBJECTDIR}/uart.o.d ${OBJECTDIR}/mp6050.o.d ${OBJECTDIR}/LED-circle.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/mp6050.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/inputcapt.o ${OBJECTDIR}/outputcompare.o ${OBJECTDIR}/accelgyro.o ${OBJECTDIR}/i2c_func.o ${OBJECTDIR}/T1-init-filter.o ${OBJECTDIR}/pid-motorcontrol.o ${OBJECTDIR}/uart.o ${OBJECTDIR}/mp6050.o ${OBJECTDIR}/LED-circle.o
 
 # Source Files
-SOURCEFILES=main.c inputcapt.c outputcompare.c accelgyro.c i2c_func.c T1-init-filter.c pid-motorcontrol.c uart.c mp6050.c
+SOURCEFILES=main.c inputcapt.c outputcompare.c accelgyro.c i2c_func.c T1-init-filter.c pid-motorcontrol.c uart.c mp6050.c LED-circle.c
 
 
 CFLAGS=
@@ -145,6 +145,13 @@ ${OBJECTDIR}/mp6050.o: mp6050.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mp6050.c  -o ${OBJECTDIR}/mp6050.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mp6050.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/mp6050.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/LED-circle.o: LED-circle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LED-circle.o.d 
+	@${RM} ${OBJECTDIR}/LED-circle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  LED-circle.c  -o ${OBJECTDIR}/LED-circle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LED-circle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/LED-circle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -208,6 +215,13 @@ ${OBJECTDIR}/mp6050.o: mp6050.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/mp6050.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  mp6050.c  -o ${OBJECTDIR}/mp6050.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mp6050.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/mp6050.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/LED-circle.o: LED-circle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LED-circle.o.d 
+	@${RM} ${OBJECTDIR}/LED-circle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  LED-circle.c  -o ${OBJECTDIR}/LED-circle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LED-circle.o.d"        -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/LED-circle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
