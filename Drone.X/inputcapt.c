@@ -48,7 +48,7 @@ void Initialize_IC()
     _TRISB5 = 1;
     _TRISB6 = 1;
     _TRISB7 = 1;
-    _TRISC4 = 1;
+    _TRISC3 = 1;
 
     OpenCapture1(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
     OpenCapture2(IC_IDLE_CON & IC_TIMER2_SRC & IC_INT_1CAPTURE & IC_EVERY_EDGE);
@@ -74,6 +74,10 @@ void __attribute__((interrupt, auto_psv)) _IC1Interrupt(void)
     {
         throttle_input = IC1BUF;
     }
+
+    if(throttle_input<5000){throttle_input=5000;}
+    if(throttle_input>9000){throttle_input=9000;}
+
    // Reset_Timer4(); //Watchdog Timer
     _IC1IF = 0; //Clear IC1 interrupt flag
 }
@@ -90,6 +94,10 @@ void __attribute__((interrupt, auto_psv)) _IC2Interrupt(void)
     {
         roll_input = IC2BUF;
     }
+
+    if(roll_input<5000){roll_input=5000;}
+    if(roll_input>9000){roll_input=9000;}
+
 //  Reset_Timer4(); //Watchdog Timer
     _IC2IF = 0; //Clear IC2 interrupt flag
 }
@@ -106,6 +114,10 @@ void __attribute__((interrupt, auto_psv)) _IC7Interrupt(void)
     {
         pitch_input = IC7BUF;
     }
+
+    if(pitch_input<5000){pitch_input=5000;}
+    if(pitch_input>9000){pitch_input=9000;}
+
 //   Reset_Timer4(); //Watchdog Timer
     _IC7IF = 0; //Clear IC7 interrupt flag
 }
@@ -122,6 +134,10 @@ void __attribute__((interrupt, auto_psv)) _IC8Interrupt(void)
     {
         yaw_input = IC8BUF;
     }
+
+    if(yaw_input<5000){yaw_input=5000;}
+    if(yaw_input>9000){yaw_input=9000;}
+
     //Reset_Timer4(); //Watchdog Timer
     _IC8IF = 0; //Clear IC8 interrupt flag
 }

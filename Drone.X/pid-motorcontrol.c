@@ -72,8 +72,6 @@ static volatile float TYangle = 0;
 
 void PID()
 {
-
-
     TZrate = PLAGE_ZRATE*(float)((float)yaw_input - MES_MID)/(MES_MAX - MES_MIN);
     if(TZrate < 1 && TZrate > -1) {TZrate = 0;}
     TZrate *= Kdir;
@@ -100,7 +98,7 @@ void PID()
    PREVIOUS_ERROR[1] = ERROR[1];
    PREVIOUS_ERROR[2] = ERROR[2];
 
-/// avant bullshit MP6050
+// avant bullshit MP6050
     ERROR[0] = TXangle - filtered_angles[0]; //roll
     ERROR[1] = TYangle - filtered_angles[1]; //pitch
     ERROR[2] = TZrate - dataG[2]; //speed asserv for yaw
@@ -185,10 +183,15 @@ void Update_PWM()
 	OC2RS = OC2_output;
 	OC3RS = OC3_output;
 	OC4RS = OC4_output;
-        //printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
-        //printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
 
     }
+
+    static int y=0;
+        if (y%100 == 1) {
+            //printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
+            printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
+        }
+        y+=1;
 }
 
 void testmoteurs()

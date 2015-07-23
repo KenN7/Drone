@@ -86,12 +86,8 @@ extern unsigned short int g; // l'intensité de vert
 extern unsigned short int r; // l'intensité de rouge
 extern unsigned short int b; // l'intensité de bleu
 extern unsigned short int pixel[120];
+extern int l; //luminosité en pourcentage.
 
-extern int saveIEC0;
-extern int saveIEC1;
-extern int saveIEC2;
-extern int saveIEC3;
-extern int saveIEC4;
 // END BULLSHIT
 
 
@@ -121,8 +117,8 @@ void MPU6050_Test_I2C(void);
 int MPU6050_Check_Registers(void);
 void Calibrate_Gyros(void);
 void Get_Accel_Values(void);
-void Get_Accel_Angles(void);
-void Get_Gyro_Rates(void);
+void Get_Accel_Angles(volatile float * data);
+void Get_Gyro_Rates(volatile float * data);
 
 //Protos for T2 and InputCapture
 void Initialize_T2();
@@ -157,13 +153,14 @@ void PutLong(long i);
 void ProcessRxData();
 
 void Set_Pixels(int, unsigned short int, unsigned short int, unsigned short int);
-void Set_led(void);
+void Set_led(int);
 void noInterrupts(void);
 void reInterrupts(void);
-void flash(void);
+void flash(int);
 void eteindre(void);
-void SOS(void);
-void turning_point(void);
-void degrade(void);
-void ironmanheart(void);
-void stack_point(void);
+void SOS(int);
+void turning_point(int);
+void degrade(int);
+void ironmanheart(int);
+void stack_point(int);
+void arc_en_ciel(int);

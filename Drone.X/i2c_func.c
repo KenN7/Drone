@@ -14,8 +14,9 @@ void InitI2C(void)
 
 	//Set the I2C(1) BRG Baud Rate.
 	//(((1/400KHz)-130ns)x40MIPs)-2 = 93
-	I2C1BRG = 80; //93
-
+	I2C1BRG = 93; //80
+//        //(((1/100KHz)-130ns)x40MIPs)-2 = 393
+//        I2C1BRG = 255;
 
 	//Now we will initialise the I2C peripheral for Master Mode, No Slew Rate
 	//Control, SMbus levels, and leave the peripheral switched off.

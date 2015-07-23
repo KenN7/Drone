@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////
+//This code has been modified.
+//You will find the original codes here : https://github.com/big5824/Quadrocopter/blob/master/MPU6050.c
+//And here : https://github.com/big5824/Quadrocopter/blob/master/MPU6050.h
+////////////////////////////////////////////////////////////////////
+
 #include <p33Fxxxx.h>      /* Includes device header file                     */
 #include <stdint.h>        /* Includes uint16_t definition                    */
 #include <stdbool.h>       /* Includes true/false definition                  */
@@ -323,7 +329,7 @@ void Calibrate_Gyros()
 
 	printf("\nGyro X offset sum: %ld Gyro X offset: %d", GYRO_XOUT_OFFSET_1000SUM, GYRO_XOUT_OFFSET);
 	printf("\nGyro Y offset sum: %ld Gyro Y offset: %d", GYRO_YOUT_OFFSET_1000SUM, GYRO_YOUT_OFFSET);
-	printf("\nGyro Z offset sum: %ld Gyro Z offset: %d", GYRO_ZOUT_OFFSET_1000SUM, GYRO_ZOUT_OFFSET);
+	printf("\nGyro Z offset sum: %ld Gyro Z offset: %d\n", GYRO_ZOUT_OFFSET_1000SUM, GYRO_ZOUT_OFFSET);
 }
 
 //Gets raw accelerometer data, performs no processing
@@ -342,17 +348,17 @@ void Get_Accel_Values()
 }
 
 //Converts the already acquired accelerometer data into 3D euler angles
-void Get_Accel_Angles()
+void Get_Accel_Angles(volatile float * data)
 {
 	//ACCEL_XANGLE = 57.295*atan((float)ACCEL_YOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_XOUT,2)))*a + (1-a)*ACCEL_XANGLE;
 	//ACCEL_YANGLE = 57.295*atan((float)-ACCEL_XOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_YOUT,2)))*a + (1-a)*ACCEL_YANGLE;
 
-	ACCEL_XANGLE = 57.295*atan((float)ACCEL_YOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_XOUT,2)));
-	ACCEL_YANGLE = 57.295*atan((float)-ACCEL_XOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_YOUT,2)));
+	data[0] = 57.295*atan((float)ACCEL_YOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_XOUT,2)));
+	data[1] = 57.295*atan((float)-ACCEL_XOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_YOUT,2)));
 }
 
 //Function to read the gyroscope rate data and convert it into degrees/s
-void Get_Gyro_Rates()
+void Get_Gyro_Rates(volatile float * data)
 {
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_XOUT_H, &GYRO_XOUT_H, 1);
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_XOUT_L, &GYRO_XOUT_L, 1);
@@ -370,9 +376,9 @@ void Get_Gyro_Rates()
 	GYRO_YRATE = (float)GYRO_YOUT/gyro_ysensitivity;
 	GYRO_ZRATE = (float)GYRO_ZOUT/gyro_zsensitivity;
 
-	GYRO_XANGLE += GYRO_XRATE*dt;
-	GYRO_YANGLE += GYRO_YRATE*dt;
-	GYRO_ZANGLE += GYRO_ZRATE*dt;
+	data[0] += GYRO_XRATE*dt;
+	data[1] += GYRO_YRATE*dt;
+	data[2] = GYRO_ZRATE;
 }
 
 /*void Get_Gyro_Raw_Rates()

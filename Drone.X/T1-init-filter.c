@@ -73,14 +73,16 @@ void InitApp(void)
     _TRISA8 = 1;
     _TRISA9 = 1;
     _TRISC7 = 0;
+
+    _TRISB14 = 0;   //Allim' auxiliaire de l'accelero/gyro mp6050.
+    _RB14 = 1;
+    
     //Si on a un interrupteur sur la pin RB5 (par exemple), on la met en entree
     //_TRISB5 = 1;
     //Et on active la pullup qui va bien (registres CNPU1 et CNPU2)
     //_CN27PUE = 1;
     // activation de la priorite des interruptions
     _NSTDIS = 0;
-    _DMA4IP = 7;
-    _DMA4IE = 1;
     
     AD1PCFGL = 0xFFFF; //desactivation of analog pins
 
@@ -88,27 +90,31 @@ void InitApp(void)
 //    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
 //    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
 //    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
-//    led1 = 1; led2 = 1; led3 = 1; 
+//    led1 = 1; led2 = 1; led3 = 1;
     Init_UART(); //Init UART for debug
     printf("UART oK");
     __delay_ms(250);
     InitI2C();
     __delay_ms(500);
-    test_accel();
-    Initialize_Accel(); //I2C init
-    Initialize_Gyro();
-    Calibrate_Gyro(raw_dataG);
-    //int error = 1;
-    //do
-    //{
-        //Setup_MPU6050();
-        //MPU6050_Test_I2C();
-        //error = MPU6050_Check_Registers();
-    //}
-    //while(error==1);
+
+         //Fonction avec l'accel et le gyro 6D0F.
+//    test_accel();
+//    Initialize_Accel(); //I2C init
+//    Initialize_Gyro();
+//    Calibrate_Gyro(raw_dataG);
+
+        //Fonction avec l'accel et le gyro MPU6050
+    int error = 1;
+    do
+    {
+        Setup_MPU6050();
+        MPU6050_Test_I2C();
+        error = MPU6050_Check_Registers();
+    }
+    while(error==1);
     
     __delay_ms(300);
-    //Calibrate_Gyros();
+    Calibrate_Gyros();
     // end calib mp6050
 
     Initialize_T2(); //Timer 2 for Input Capture
@@ -191,25 +197,25 @@ extern float filteredOutput[3];
 void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
 {
     _T1IF = 0;      // On baisse le FLAG
-    Read_Accel(raw_dataA);
+//    Read_Accel(raw_dataA);
     //smoothSensorReadings();
-    Read_Gyro(raw_dataG);
-    Process_Accel(raw_dataA, dataA);
-    Process_Gyro(raw_dataG, dataG);
-    //Get_Gyro_Rates();
-    //Get_Accel_Values();
-    //Get_Accel_Angles();
+//    Read_Gyro(raw_dataG);
+//    Process_Accel(raw_dataA, dataA);
+//    Process_Gyro(raw_dataG, dataG);
+    Get_Gyro_Rates(dataG);
+    Get_Accel_Values();
+    Get_Accel_Angles(dataA);
     //Complementary_filter(filtered_angles, dataG, dataA);
     Snd_filter(filtered_angles, dataG, dataA);
     //second_order_complementary_filter();
     
     //printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
-    static int y=0;
-    if (y%100 == 1) {
-        //printf("%g,%g,%g\n",(double)filtered_angles[1],(double)dataG[1],(double)dataA[1]);
-        printf("%g,%g\n", (double)dataG[2], (double)dataA[2]);
-    }
-    y+=1;
+//    static int y=0;
+//    if (y%100 == 1) {
+//        printf("%g,%g,%g\n",(double)filtered_angles[1],(double)dataG[1],(double)dataA[1]);
+//        //printf("%g,%g\n", (double)dataG[2], (double)dataA[2]);
+//    }
+//    y+=1;
     //printf("%f,%f,%f\n",COMPLEMENTARY_XANGLE,GYRO_XRATE,ACCEL_XANGLE);
     //min motor 6500; ??
     PID();
@@ -218,12 +224,6 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     
 //    led1 = !led1;    // On bascule l'etat de la LED
 }
-
- int saveIEC0;
- int saveIEC1;
- int saveIEC2;
- int saveIEC3;
- int saveIEC4;
 
 void noInterrupts(void){
     _IPL0=1;

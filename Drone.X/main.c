@@ -52,12 +52,12 @@ int16_t main(void)
     ConfigureOscillator();
     InitApp();
 
-    eteindre();
-    __delay_ms(500);
-    
+//    eteindre();
+//    __delay_ms(500);
+//
     while(1){
-        //eteindre();
-        stack_point();
+//        eteindre();
+//        arc_en_ciel(10);
     }
 
 

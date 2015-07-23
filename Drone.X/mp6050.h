@@ -21,10 +21,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ===============================================
 */
-//#define MPU6050_ADDRESS 0b11010010 // Address with end write bit
-#define MPU6050_ADDRESS_AD0_LOW 0x68 // address pin low (GND), default for InvenSense evaluation board
-#define MPU6050_ADDRESS_AD0_HIGH 0x69 // address pin high (VCC)
-#define MPU6050_ADDRESS MPU6050_ADDRESS_AD0_LOW
+#define MPU6050_ADDRESS 0b11010000 // Address with end write bit
+//#define MPU6050_ADDRESS_AD0_LOW 0x68 // address pin low (GND), default for InvenSense evaluation board
+//#define MPU6050_ADDRESS_AD0_HIGH 0x69 // address pin high (VCC)
+//#define MPU6050_ADDRESS MPU6050_ADDRESS_AD0_LOW
 
 #define MPU6050_RA_XG_OFFS_TC 0x00 //[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD
 #define MPU6050_RA_YG_OFFS_TC 0x01 //[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD
