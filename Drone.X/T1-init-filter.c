@@ -205,17 +205,17 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Get_Gyro_Rates(dataG);
     Get_Accel_Values();
     Get_Accel_Angles(dataA);
-    //Complementary_filter(filtered_angles, dataG, dataA);
-    Snd_filter(filtered_angles, dataG, dataA);
+    Complementary_filter(filtered_angles, dataG, dataA);
+    //Snd_filter(filtered_angles, dataG, dataA);
     //second_order_complementary_filter();
     
     //printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
-//    static int y=0;
-//    if (y%100 == 1) {
-//        printf("%g,%g,%g\n",(double)filtered_angles[1],(double)dataG[1],(double)dataA[1]);
-//        //printf("%g,%g\n", (double)dataG[2], (double)dataA[2]);
-//    }
-//    y+=1;
+    static int y=0;
+    if (y%100 == 1) {
+        printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
+        //printf("%g\n", (double)dataG[2]);
+    }
+    y+=1;
     //printf("%f,%f,%f\n",COMPLEMENTARY_XANGLE,GYRO_XRATE,ACCEL_XANGLE);
     //min motor 6500; ??
     PID();

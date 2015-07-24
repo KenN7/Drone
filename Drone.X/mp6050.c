@@ -332,6 +332,33 @@ void Calibrate_Gyros()
 	printf("\nGyro Z offset sum: %ld Gyro Z offset: %d\n", GYRO_ZOUT_OFFSET_1000SUM, GYRO_ZOUT_OFFSET);
 }
 
+void Calibrate_Gyros_via_Accel()
+{
+    int x = 0;
+    GYRO_XOUT_OFFSET_1000SUM = 0;
+    GYRO_YOUT_OFFSET_1000SUM = 0;
+    GYRO_ZOUT_OFFSET_1000SUM = 0;
+    for(x = 0; x<5000; x++)
+    {
+        Get_Accel_Values();
+        LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_ZOUT_H, &GYRO_ZOUT_H, 1);
+        LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_ZOUT_L, &GYRO_ZOUT_L, 1);
+
+	GYRO_XOUT_OFFSET_1000SUM += 57.295*atan((float)ACCEL_YOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_XOUT,2)));
+	GYRO_YOUT_OFFSET_1000SUM += 57.295*atan((float)-ACCEL_XOUT/ sqrt(pow((float)ACCEL_ZOUT,2)+pow((float)ACCEL_YOUT,2)));
+        GYRO_ZOUT_OFFSET_1000SUM += ((GYRO_ZOUT_H<<8)|GYRO_ZOUT_L);
+
+        __delay_ms(1);
+    }
+    GYRO_XOUT_OFFSET = GYRO_XOUT_OFFSET_1000SUM/5000;
+    GYRO_YOUT_OFFSET = GYRO_YOUT_OFFSET_1000SUM/5000;
+    GYRO_ZOUT_OFFSET = GYRO_ZOUT_OFFSET_1000SUM/5000;
+
+    printf("\nGyro X offset sum: %ld Gyro X offset: %d", GYRO_XOUT_OFFSET_1000SUM, GYRO_XOUT_OFFSET);
+    printf("\nGyro Y offset sum: %ld Gyro Y offset: %d", GYRO_YOUT_OFFSET_1000SUM, GYRO_YOUT_OFFSET);
+    printf("\nGyro Z offset sum: %ld Gyro Z offset: %d\n", GYRO_ZOUT_OFFSET_1000SUM, GYRO_ZOUT_OFFSET);
+}
+
 //Gets raw accelerometer data, performs no processing
 void Get_Accel_Values()
 {

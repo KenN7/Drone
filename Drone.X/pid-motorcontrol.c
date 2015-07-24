@@ -186,12 +186,12 @@ void Update_PWM()
 
     }
 
-    static int y=0;
-        if (y%100 == 1) {
-            //printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
-            printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
-        }
-        y+=1;
+//    static int y=0;
+//        if (y%100 == 1) {
+//            printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
+//            //printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
+//        }
+//        y+=1;
 }
 
 void testmoteurs()
