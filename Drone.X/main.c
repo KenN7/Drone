@@ -54,10 +54,12 @@ int16_t main(void)
 
 //    eteindre();
 //    __delay_ms(500);
-//
+//    arc_en_ciel(10);
+
     while(1){
-//        eteindre();
-//        arc_en_ciel(10);
+//      stack_point(30);
+//      __delay_ms(500);
+      
     }
 
 

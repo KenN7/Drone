@@ -29,7 +29,7 @@
 //#define led3            _LATA4
 #define T1              400 //Timer 1 frequency
 #define dt              0.0025 //Timer 1 duration
-#define c_filter        0.95 //coef of the complementary filter (must be <1)
+#define c_filter        0.98 //coef of the complementary filter (must be <1)
 #define timeConstant    1.1// constant for second order complementary
 
 #define UnlockRP        __builtin_write_OSCCONL(OSCCON & 0xBF)
@@ -152,6 +152,7 @@ void PutCharUART1(unsigned char b);
 void PutLong(long i);
 void ProcessRxData();
 
+//Protos for LED ring Neopixels.
 void Set_Pixels(int, unsigned short int, unsigned short int, unsigned short int);
 void Set_led(int);
 void noInterrupts(void);

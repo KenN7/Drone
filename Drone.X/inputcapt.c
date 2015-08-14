@@ -42,7 +42,7 @@ void Initialize_IC()
     _IC1R = 5; //Tie IC1 on RP5
     _IC2R = 6; //Tie IC2 on RP6
     _IC7R = 7; //Tie IC7 on RP7
-    _IC8R = 19; //Tie IC8 on RP20
+    _IC8R = 19; //Tie IC8 on RP19
     LockRP;
     
     _TRISB5 = 1;

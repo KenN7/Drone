@@ -36,6 +36,7 @@ extern volatile float pitch_input;
 extern volatile float yaw_input;
 
 extern volatile float filtered_angles[2];
+extern volatile float filtered_angles2[2];
 extern volatile float dataA[2];
 extern volatile float dataG[3];
 /*
@@ -56,11 +57,15 @@ volatile float INTEGRAL[2];
 //float ZKD = 0.0; //25 8/6/12
 
 //TODO teweaker les coefs
-static float KP = 20; //25 27/6/12 //0.2  // BAISSEERRRR
-static float KI = 10; //85 5/6/12  //TESERRR
-static float KD = 5; //7 27/6/12 // TESTERRRR
+static float XKP = 10; //25 27/6/12 //0.2  // BAISSEERRRR   //20
+static float XKI = 0; //85 5/6/12  //TESERRR               //10
+static float XKD = 0; //7 27/6/12 // TESTERRRR              //5
 
-static float ZKP = 2; //40 8/6/12
+static float YKP = 10;     //Ku=5 ==> Kp=0.6*Ku=3         //10 ==> 6
+static float YKI = 0;     //Tu=1sec ==> Ki=2Kp/Tu=6       //1  ==> 12
+static float YKD = 0;     //Kd=Kp*Tu/8=0.375              //0.75
+
+static float ZKP = 20; //40 8/6/12
 static float ZKD = 0; //25 8/6/12
 
 static int Kdir = 1;
@@ -127,8 +132,8 @@ void PID()
     if(INTEGRAL[1] > 0.5) {INTEGRAL[1] = 0.5;}
     else if(INTEGRAL[1] < -0.5) {INTEGRAL[1] = -0.5;}
 
-    PID_XOUTPUT = ERROR[0]*KP + DIFFERENTIAL[0]*KD + INTEGRAL[0]*KI;
-    PID_YOUTPUT = ERROR[1]*KP + DIFFERENTIAL[1]*KD + INTEGRAL[1]*KI;
+    PID_XOUTPUT = ERROR[0]*XKP + DIFFERENTIAL[0]*XKD + INTEGRAL[0]*XKI;
+    PID_YOUTPUT = ERROR[1]*YKP + DIFFERENTIAL[1]*YKD + INTEGRAL[1]*YKI;
     PID_ZOUTPUT = ERROR[2]*ZKP + DIFFERENTIAL[2]*ZKD;
 
     if(PID_ZOUTPUT > 1000){PID_ZOUTPUT = 1000;}
@@ -163,11 +168,11 @@ void Update_PWM()
     }
     else //X config
     {
-        OC1_output = 0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; // left back (Psend1)
-	OC2_output = 0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;  //left front (Psend2)
-
-	OC3_output = -0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //right front (Psend3)
-	OC4_output = -0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //right back (Psend4)
+        OC1_output = -0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; // right front (Psend1)
+	OC2_output = -0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle;  //right back (Psend2)
+        
+	OC3_output = 0.7071*PID_XOUTPUT + 0.7071*PID_YOUTPUT + PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //left back (Psend3)
+	OC4_output = 0.7071*PID_XOUTPUT + -0.7071*PID_YOUTPUT - PID_ZOUTPUT + MIN_PWM + PLAGE_MOTOR*throttle; //left front (Psend4)
 
 	if(OC1_output > MAX_PWM) {OC1_output = MAX_PWM;}
 	if(OC2_output > MAX_PWM) {OC2_output = MAX_PWM;}
@@ -179,19 +184,19 @@ void Update_PWM()
 	if(OC3_output < MIN_PWM) {OC3_output = MIN_PWM;}
 	if(OC4_output < MIN_PWM) {OC4_output = MIN_PWM;}
 
-	OC1RS = OC1_output;
+	//OC1RS = OC1_output;
 	OC2RS = OC2_output;
-	OC3RS = OC3_output;
+	//OC3RS = OC3_output;
 	OC4RS = OC4_output;
 
     }
 
 //    static int y=0;
-//        if (y%100 == 1) {
-//            printf("%i,%i,%i,%i\n",OC1_output,OC2_output,OC3_output,OC4_output);
-//            //printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
-//        }
-//        y+=1;
+//    if (y%100 == 1) {
+//        printf("%i,%i\n",OC2_output,OC4_output);
+//        //printf("%g,%g,%g,%g\n",(double)PID_XOUTPUT,(double)PID_YOUTPUT,(double)PID_ZOUTPUT,(double)throttle);
+//    }
+//    y+=1;
 }
 
 void testmoteurs()

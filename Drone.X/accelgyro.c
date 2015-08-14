@@ -70,7 +70,7 @@ float circularBufferY[5];
 float circularBufferZ[5];
 float sensorDataCircularSum[3];
 float filteredOutput[3];
-extern volatile int raw_dataA[3]; // typically the value you read from your sensor
+extern volatile float dataA[3]; // typically the value you read from your sensor
 
 void smoothSensorReadings(){
  // We remove the oldest value from the buffer
@@ -78,14 +78,14 @@ void smoothSensorReadings(){
  sensorDataCircularSum[1] = sensorDataCircularSum[1] - circularBufferY[indexBuffer];
  sensorDataCircularSum[2] = sensorDataCircularSum[2] - circularBufferZ[indexBuffer];
   // The new input from the sensor is placed in the buffer
- circularBufferX[indexBuffer] = raw_dataA[0];
- circularBufferY[indexBuffer] = raw_dataA[1];
- circularBufferZ[indexBuffer] = raw_dataA[2];
+ circularBufferX[indexBuffer] = dataA[0];
+ circularBufferY[indexBuffer] = dataA[1];
+ circularBufferZ[indexBuffer] = dataA[2];
 // It is also added to the total sum of the last  BUFFER_SIZE readings
 // This method avoids to sum all the elements every time this function is called.
- sensorDataCircularSum[0] += raw_dataA[0];
- sensorDataCircularSum[1] += raw_dataA[1];
- sensorDataCircularSum[2] += raw_dataA[2];
+ sensorDataCircularSum[0] += dataA[0];
+ sensorDataCircularSum[1] += dataA[1];
+ sensorDataCircularSum[2] += dataA[2];
 // We increment the cursor
  indexBuffer++;
 

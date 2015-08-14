@@ -49,7 +49,7 @@ void Set_led(int l){ //Envoie au cercle de led les instruction contenue dans pix
         cpt++;
     }
 
-    noInterrupts();
+   // noInterrupts();
 
     int i=0;//compteur octet
     int j=0;//compteur bit
@@ -79,7 +79,7 @@ void Set_led(int l){ //Envoie au cercle de led les instruction contenue dans pix
         i++;
         j=0;
     }
-    reInterrupts();
+    //reInterrupts();
 }
 
 void flash(int l){

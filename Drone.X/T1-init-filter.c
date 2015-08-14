@@ -49,6 +49,9 @@ volatile float dataA[2];
 volatile float dataG[3];
 volatile float filtered_angles[2]={0,0};
 volatile float filtered_angles2[2]={0,0};
+volatile float filtered_offset[2]={0,0};
+volatile float moyenne_X[100]={0};
+volatile float moyenne_Y[100]={0};
 
 volatile float filter_xterm[3] = {0,0,0};
 volatile float filter_yterm[3] = {0,0,0};
@@ -92,7 +95,7 @@ void InitApp(void)
 //    led1 = 1; led2 = 1; led3 = 1; __delay_ms(250); led1 = 0; led2 = 0; led3 = 0; __delay_ms(250);
 //    led1 = 1; led2 = 1; led3 = 1;
     Init_UART(); //Init UART for debug
-    printf("UART oK");
+    printf("\nUART oK");
     __delay_ms(250);
     InitI2C();
     __delay_ms(500);
@@ -188,6 +191,29 @@ void second_order_complementary_filter() //http://code.google.com/p/aeroquad/sou
     COMPLEMENTARY_YANGLE = (dt * filter_yterm[1]) + COMPLEMENTARY_YANGLE;
 }
 
+void filtre_moyennant(volatile float * filtered, volatile float * data)
+{
+    int i=0;
+    for (i=0; i<99; i++)
+    {
+        moyenne_X[i+1]=moyenne_X[i];
+        moyenne_Y[i+1]=moyenne_Y[i];
+    }
+    moyenne_X[0]=data[0];
+    moyenne_Y[0]=data[1];
+    
+    float moyenne_X_sum=0;
+    float moyenne_Y_sum=0;
+    i=0;
+    for (i=0; i<100; i++)
+    {
+        moyenne_X_sum += moyenne_X[i];
+        moyenne_Y_sum += moyenne_Y[i];
+    }
+    filtered[0]=moyenne_X_sum/100;
+    filtered[1]=moyenne_Y_sum/100;
+}
+
 /******************************************************************************/
 /* Interrupt Routines                                                         */
 /******************************************************************************/
@@ -205,14 +231,16 @@ void __attribute__((interrupt, auto_psv)) _T1Interrupt(void)
     Get_Gyro_Rates(dataG);
     Get_Accel_Values();
     Get_Accel_Angles(dataA);
-    Complementary_filter(filtered_angles, dataG, dataA);
-    //Snd_filter(filtered_angles, dataG, dataA);
+    smoothSensorReadings();
+    Complementary_filter(filtered_angles, dataG, filteredOutput);
+    //filtre_moyennant(filtered_angles2, filtered_angles);
+    Snd_filter(filtered_angles, dataG, dataA);
     //second_order_complementary_filter();
     
     //printf("%g,%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0],(double)filtered_angles2[0]);
     static int y=0;
     if (y%100 == 1) {
-        printf("%g,%g,%g\n",(double)filtered_angles[0],(double)dataG[0],(double)dataA[0]);
+        printf("%g,%g\n",(double)filtered_angles[0],(double)filtered_angles[1]);
         //printf("%g\n", (double)dataG[2]);
     }
     y+=1;

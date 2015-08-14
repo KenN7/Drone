@@ -70,10 +70,10 @@ void Setup_MPU6050()
 	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_SMPLRT_DIV, 0x01);
 	//Disable FSync, 48Hz DLPF
 	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_CONFIG, 0x03);
-	//Disable gyro self tests, scale of 500 degrees/s
-	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_CONFIG, 0b00001000);
-	//Disable accel self tests, scale of +-4g, no DHPF
-	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_ACCEL_CONFIG, 0b00001000);
+	//Disable gyro self tests, scale of 1000 degrees/s
+	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_CONFIG, 0b00010000);
+	//Disable accel self tests, scale of +-8g, no DHPF
+	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_ACCEL_CONFIG, 0b00010000);
 	//Freefall threshold of <|0mg|
 	LDByteWriteI2C(MPU6050_ADDRESS, MPU6050_RA_FF_THR, 0x00);
 	//Freefall duration limit of 0
@@ -206,6 +206,7 @@ void MPU6050_Test_I2C()
          
 	}
 }
+
 int MPU6050_Check_Registers()
 {
 	unsigned char Data = 0x00;
@@ -216,9 +217,9 @@ int MPU6050_Check_Registers()
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_CONFIG, &Data, 1);
 	if(Data != 0x03) { printf("\nRegister check 2 failed, value should be 0x03, was 0x%x", Data); Failed = 1; }
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_GYRO_CONFIG, &Data, 1);
-	if(Data != 0b00001000) { printf("\nRegister check 3 failed, value should be 0b00001000, was 0x%x", Data); Failed = 1; }
+	if(Data != 0b00010000) { printf("\nRegister check 3 failed, value should be 0b00001000, was 0x%x", Data); Failed = 1; }
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_ACCEL_CONFIG, &Data, 1);
-	if(Data != 0b00001000) { printf("\nRegister check 4 failed, value should be 0b00001000, was 0x%x", Data); Failed = 1; }
+	if(Data != 0b00010000) { printf("\nRegister check 4 failed, value should be 0b00001000, was 0x%x", Data); Failed = 1; }
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_FF_THR, &Data, 1);
 	if(Data != 0x00) { printf("\nRegister check 5 failed, value should be 0x00, was 0x%x", Data); Failed = 1; }
 	LDByteReadI2C(MPU6050_ADDRESS, MPU6050_RA_FF_DUR, &Data, 1);
@@ -332,7 +333,7 @@ void Calibrate_Gyros()
 	printf("\nGyro Z offset sum: %ld Gyro Z offset: %d\n", GYRO_ZOUT_OFFSET_1000SUM, GYRO_ZOUT_OFFSET);
 }
 
-void Calibrate_Gyros_via_Accel()
+void Calibrate_Gyros_via_Accel()//test pas tres concluant.
 {
     int x = 0;
     GYRO_XOUT_OFFSET_1000SUM = 0;
